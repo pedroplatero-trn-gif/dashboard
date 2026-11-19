@@ -10,7 +10,7 @@ from openpyxl.utils import get_column_letter
 # =====================================================================
 EXCEL_ENTRADA = "reporte_sucio.xlsx"  
 EXCEL_SALIDA = "Reporte_Limpiado_Visual.xlsx"
-DASHBOARD_SALIDA = "diseño_dashbard.html"  
+DASHBOARD_SALIDA = "index.html"  
 
 # Paleta de Colores Oficial HAVAS (Blanco, Negro y Rojo)
 COLOR_HAVAS_BLACK = "111111"  # Negro corporativo para cabeceras
