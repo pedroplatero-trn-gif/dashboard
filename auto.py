@@ -4,7 +4,7 @@ import pandas as pd
 from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from openpyxl.utils import get_column_letter
-
+ 
 # =====================================================================
 # CONFIGURACIÓN DE RUTAS Y NOMBRES DE ARCHIVO
 # =====================================================================
@@ -176,9 +176,14 @@ HTML_TEMPLATE = """<!DOCTYPE html>
                     </select>
                 </div>
                 <div class="filter-group" id="campaign-filter-wrapper" style="display: none;">
-                    <label class="filter-label" for="campaign-search">Buscar Campaña:</label>
-                    <input type="text" id="campaign-search" class="search-input" style="width: 100%;" placeholder="Escribe el nombre de la campaña..." onkeyup="applyFilters()">
+                    <label class="filter-label" for="campaign-filter">Campaña:</label>
+                    <select id="campaign-filter" class="select-input" onchange="applyFilters()">
+                        <option value="all">-- Todas las campañas --</option>
+                    </select>
                 </div>
+                <button type="button" class="btn-action" onclick="resetFilters()">
+                    Restablecer filtros
+                </button>
                 <div class="python-sync-box">
                     <h4 style="margin-bottom: 8px;">🔄 Sincronizado por Python</h4>
                     <p>Los datos han sido leídos y procesados del excel original automáticamente.</p>
@@ -207,52 +212,124 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         // INSERT_DATA_RESULTADOS_HERE
         // INSERT_DATA_CAMPANAS_HERE
 
-        let currentTab = 'normal';
+let currentTab = 'normal';
+let currentFilteredData = [];
 
-        function initFilters() {
-            const select = document.getElementById('contract-filter');
-            select.innerHTML = '<option value="all">-- Todos los Contratos --</option>';
-            const uniqueContracts = [...new Set(dataResultados.map(item => item.contrato))];
-            uniqueContracts.sort().forEach(contract => {
-                const opt = document.createElement('option');
-                opt.value = contract;
-                opt.textContent = contract;
-                select.appendChild(opt);
-            });
-        }
+function initFilters() {
+    const contractSelect = document.getElementById('contract-filter');
 
-        function switchTab(tab) {
-            currentTab = tab;
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            if(tab === 'normal') {
-                document.getElementById('btn-tab-normal').classList.add('active');
-                document.getElementById('table-title').textContent = 'Análisis de Cobertura Global (Contratos)';
-                document.getElementById('campaign-filter-wrapper').style.display = 'none';
-            } else {
-                document.getElementById('btn-tab-campana').classList.add('active');
-                document.getElementById('table-title').textContent = 'Análisis de Cobertura Detallado (Campañas)';
-                document.getElementById('campaign-filter-wrapper').style.display = 'block';
-            }
-            applyFilters();
-        }
+    contractSelect.innerHTML =
+        '<option value="all">-- Todos los Contratos --</option>';
 
-        function applyFilters() {
-            const selectedContract = document.getElementById('contract-filter').value;
-            const searchVal = document.getElementById('campaign-search').value.toLowerCase();
-            let filteredData = [];
-            let isCampanaView = (currentTab === 'campana');
+    const contracts = [
+        ...new Set(
+            [...dataResultados, ...dataCampanas]
+                .map(item => item.contrato)
+                .filter(Boolean)
+        )
+    ].sort((a, b) => a.localeCompare(b, 'es'));
 
-            if (!isCampanaView) {
-                filteredData = dataResultados.filter(item => selectedContract === 'all' || item.contrato === selectedContract);
-            } else {
-                filteredData = dataCampanas.filter(item => {
-                    const matchContract = selectedContract === 'all' || item.contrato === selectedContract;
-                    const matchSearch = item.campana.toLowerCase().includes(searchVal);
-                    return matchContract && matchSearch;
-                });
-            }
-            renderDashboard(filteredData, isCampanaView);
-        }
+    contracts.forEach(contract => {
+        const option = document.createElement('option');
+        option.value = contract;
+        option.textContent = contract;
+        contractSelect.appendChild(option);
+    });
+
+    updateCampaignOptions();
+}
+
+function updateCampaignOptions() {
+    const campaignSelect = document.getElementById('campaign-filter');
+    const selectedContract =
+        document.getElementById('contract-filter').value;
+    const previousCampaign = campaignSelect.value;
+
+    const campaigns = [
+        ...new Set(
+            dataCampanas
+                .filter(item =>
+                    selectedContract === 'all' ||
+                    item.contrato === selectedContract
+                )
+                .map(item => item.campana)
+                .filter(Boolean)
+        )
+    ].sort((a, b) => a.localeCompare(b, 'es'));
+
+    campaignSelect.innerHTML =
+        '<option value="all">-- Todas las campañas --</option>';
+
+    campaigns.forEach(campaign => {
+        const option = document.createElement('option');
+        option.value = campaign;
+        option.textContent = campaign;
+        campaignSelect.appendChild(option);
+    });
+
+    // Mantiene la selección si sigue disponible para el contrato elegido.
+    if (campaigns.includes(previousCampaign)) {
+        campaignSelect.value = previousCampaign;
+    }
+}
+
+function switchTab(tab) {
+    currentTab = tab;
+
+    document.querySelectorAll('.tab-btn').forEach(button =>
+        button.classList.remove('active')
+    );
+
+    const campaignFilter =
+        document.getElementById('campaign-filter-wrapper');
+
+    if (tab === 'normal') {
+        document.getElementById('btn-tab-normal').classList.add('active');
+        document.getElementById('table-title').textContent =
+            'Análisis de Cobertura Global (Contratos)';
+        campaignFilter.style.display = 'none';
+    } else {
+        document.getElementById('btn-tab-campana').classList.add('active');
+        document.getElementById('table-title').textContent =
+            'Análisis de Cobertura Detallado (Campañas)';
+        campaignFilter.style.display = 'block';
+        updateCampaignOptions();
+    }
+
+    applyFilters();
+}
+
+function applyFilters() {
+    const selectedContract =
+        document.getElementById('contract-filter').value;
+
+    if (currentTab === 'normal') {
+        currentFilteredData = dataResultados.filter(item =>
+            selectedContract === 'all' ||
+            item.contrato === selectedContract
+        );
+    } else {
+        const selectedCampaign =
+            document.getElementById('campaign-filter').value;
+
+        currentFilteredData = dataCampanas.filter(item =>
+            (selectedContract === 'all' ||
+                item.contrato === selectedContract) &&
+            (selectedCampaign === 'all' ||
+                item.campana === selectedCampaign)
+        );
+    }
+
+    renderDashboard(currentFilteredData, currentTab === 'campana');
+}
+
+function resetFilters() {
+    document.getElementById('contract-filter').value = 'all';
+    document.getElementById('campaign-filter').value = 'all';
+    updateCampaignOptions();
+    applyFilters();
+}
+
 
         function getCoverageStatus(ratio) {
             if (ratio >= 90 && ratio <= 105) return { class: 'badge-good', label: 'ÓPTIMO' };
@@ -328,26 +405,69 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         }
 
         function exportCSV() {
-            let csvContent = "data:text/csv;charset=utf-8,";
-            if (currentTab === 'normal') {
-                csvContent += "Contrato;LINK con GCLID;LOGS;Ratio Cobertura\\n";
-                dataResultados.forEach(r => { csvContent += `"${r.contrato}";${r.gclid};${r.logs};${r.ratio}\\n`; });
-            } else {
-                csvContent += "Contrato;Campana;LINK con GCLID;LOGS;Ratio Cobertura\\n";
-                dataCampanas.forEach(r => { csvContent += `"${r.contrato}";"${r.campana}";${r.gclid};${r.logs};${r.ratio}\\n`; });
-            }
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `Havas_Cobertura_${currentTab}.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
+    const rows = currentFilteredData;
+    const isCampaignView = currentTab === 'campana';
+
+    const header = isCampaignView
+        ? ['Contrato', 'Campaña', 'LINK con GCLID', 'LOGS', 'Ratio Cobertura']
+        : ['Contrato', 'LINK con GCLID', 'LOGS', 'Ratio Cobertura'];
+
+    const csvCell = value =>
+        '"' + String(value ?? '').replace(/"/g, '""') + '"';
+
+    const lines = [
+        header.map(csvCell).join(';'),
+        ...rows.map(item => {
+            const values = isCampaignView
+                ? [
+                    item.contrato,
+                    item.campana,
+                    item.gclid,
+                    item.logs,
+                    item.ratio
+                ]
+                : [
+                    item.contrato,
+                    item.gclid,
+                    item.logs,
+                    item.ratio
+                ];
+
+            return values.map(csvCell).join(';');
+        })
+    ];
+
+    const blob = new Blob(['\ufeff' + lines.join('\r\n')], {
+        type: 'text/csv;charset=utf-8'
+    });
+
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+
+    link.href = url;
+    link.download = isCampaignView
+        ? 'Havas_Cobertura_campanas_filtradas.csv'
+        : 'Havas_Cobertura_contratos_filtrados.csv';
+
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
 
         // Se inyectarán los arrays dataResultados y dataCampanas arriba
-        initFilters();
-        applyFilters();
+        document.getElementById('contract-filter').addEventListener('change', () => {
+    updateCampaignOptions();
+    applyFilters();
+});
+
+document.getElementById('campaign-filter').addEventListener(
+    'change',
+    applyFilters
+);
+
+initFilters();
+applyFilters();
+
     </script>
 </body>
 </html>
