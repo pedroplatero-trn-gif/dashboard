@@ -79,10 +79,42 @@
         .coverage-bar-group { margin-bottom: 15px; }
         .coverage-labels { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 5px; }
         .campaign-name-label { font-weight: 600; color: var(--primary); max-width: 70%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .bar-track { background-color: #edf2f7; height: 24px; border-radius: 12px; position: relative; overflow: hidden; }
-        .bar-fill-gclid { background: linear-gradient(90deg, #111111 0%, var(--havas-red) 100%); height: 100%; border-radius: 12px 0 0 12px; position: absolute; top: 0; left: 0; transition: width 0.5s ease; }
-        .bar-marker-logs { width: 4px; background-color: var(--primary); height: 100%; position: absolute; top: 0; z-index: 10; transition: left 0.5s ease; }
-        .bar-marker-logs::after { content: 'LOGS'; position: absolute; top: -16px; transform: translateX(-50%); font-size: 0.65rem; background: var(--primary); color: white; padding: 1px 4px; border-radius: 4px; font-weight: bold; }
+        .bar-line {
+    display: grid;
+    grid-template-columns: 52px minmax(0, 1fr);
+    align-items: center;
+    gap: 8px;
+    margin: 5px 0;
+}
+
+.bar-series {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--text-light);
+}
+
+.bar-track {
+    width: 100%;
+    height: 10px;
+    background-color: #edf2f7;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.bar-fill-gclid,
+.bar-fill-logs {
+    height: 100%;
+    border-radius: 12px;
+}
+
+.bar-fill-gclid {
+    background-color: var(--havas-red);
+}
+
+.bar-fill-logs {
+    background-color: var(--primary);
+}
+
         .table-responsive { overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem; }
         th { background-color: #111111; color: #ffffff; padding: 12px 16px; font-weight: 700; border-bottom: 2px solid var(--border); text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.5px; }
@@ -1905,7 +1937,11 @@ function resetFilters() {
             tbody.innerHTML = '';
             chartList.innerHTML = '';
             let totalLink = 0; let totalLogs = 0; let alertCount = 0;
-            const maxGclidVal = Math.max(...data.map(d => d.gclid), 10);
+            const maxGclidVal = Math.max(
+    ...data.flatMap(d => [Number(d.gclid) || 0, Number(d.logs) || 0]),
+    10
+);
+
 
             if (data.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="${isCampanaView ? 6 : 5}" style="text-align: center; color: var(--text-light);">No se encontraron registros.</td></tr>`;
@@ -1927,17 +1963,38 @@ function resetFilters() {
                     tbody.appendChild(tr);
 
                     if (chartList.children.length < 8) {
-                        const displayName = isCampanaView ? item.campana : item.contrato;
-                        const widthPercent = (item.gclid / maxGclidVal) * 90;
-                        const logsMarkerPercent = item.gclid > 0 ? (item.logs / item.gclid) * 100 : 0;
-                        const logsMarkerPosition = Math.min(logsMarkerPercent, 100);
+    const displayName = isCampanaView ? item.campana : item.contrato;
+    const gclidWidth = (Number(item.gclid) || 0) / maxGclidVal * 100;
+    const logsWidth = (Number(item.logs) || 0) / maxGclidVal * 100;
 
-                        const barHtml = `<div class="coverage-bar-group">
-                            <div class="coverage-labels"><span class="campaign-name-label">${displayName}</span><span style="font-weight:bold; color:var(--primary);">GCLID: ${item.gclid} vs LOGS: ${item.logs} (${item.ratio.toFixed(1)}%)</span></div>
-                            <div class="bar-track"><div class="bar-fill-gclid" style="width: ${Math.max(widthPercent, 2)}%;"><div class="bar-marker-logs" style="left: ${logsMarkerPosition}%;"></div></div></div>
-                        </div>`;
-                        chartList.insertAdjacentHTML('beforeend', barHtml);
-                    }
+    const barHtml = `
+        <div class="coverage-bar-group">
+            <div class="coverage-labels">
+                <span class="campaign-name-label">${displayName}</span>
+                <span style="font-weight:bold;color:var(--primary);">
+                    GCLID: ${item.gclid} vs LOGS: ${item.logs}
+                    (${item.ratio.toFixed(1)}%)
+                </span>
+            </div>
+
+            <div class="bar-line">
+                <span class="bar-series">GCLID</span>
+                <div class="bar-track">
+                    <div class="bar-fill-gclid" style="width:${gclidWidth}%"></div>
+                </div>
+            </div>
+
+            <div class="bar-line">
+                <span class="bar-series">LOGS</span>
+                <div class="bar-track">
+                    <div class="bar-fill-logs" style="width:${logsWidth}%"></div>
+                </div>
+            </div>
+        </div>`;
+
+    chartList.insertAdjacentHTML('beforeend', barHtml);
+}
+
                 });
             }
 
