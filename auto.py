@@ -8,9 +8,11 @@ from openpyxl.utils import get_column_letter
 # =====================================================================
 # CONFIGURACIÓN DE RUTAS Y NOMBRES DE ARCHIVO
 # =====================================================================
-EXCEL_ENTRADA = "reporte_sucio.xlsx"  
-EXCEL_SALIDA = "Reporte_Limpiado_Visual.xlsx"
-DASHBOARD_SALIDA = "index.html"  
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+EXCEL_ENTRADA = os.path.join(BASE_DIR, "reporte_sucio.xlsx")
+EXCEL_SALIDA = os.path.join(BASE_DIR, "Reporte_Limpiado_Visual.xlsx")
+DASHBOARD_SALIDA = os.path.join(BASE_DIR, "index.html")
 
 # Paleta de Colores Oficial HAVAS (Blanco, Negro y Rojo)
 COLOR_HAVAS_BLACK = "111111"  # Negro corporativo para cabeceras
@@ -437,9 +439,11 @@ function resetFilters() {
         })
     ];
 
-    const blob = new Blob(['\ufeff' + lines.join('\r\n')], {
-        type: 'text/csv;charset=utf-8'
-    });
+    const blob = new Blob(
+    ['\\uFEFF' + lines.join('\\r\\n')],
+    { type: 'text/csv;charset=utf-8' }
+);
+
 
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
