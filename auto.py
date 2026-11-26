@@ -82,7 +82,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
             font-size: 0.85rem; 
         }
 
-        .container { max-width: 1400px; margin: 30px auto; padding: 0 20px; }
+        .container { max-width: 1600px; margin: 24px auto; padding: 0 24px; }
         .kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-bottom: 30px; }
         .kpi-card { background-color: var(--bg-card); border-radius: 12px; padding: 24px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); border: 1px solid var(--border); position: relative; overflow: hidden; transition: transform 0.2s; }
         .kpi-card:hover { transform: translateY(-2px); }
@@ -92,7 +92,12 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         .kpi-value { font-size: 2.2rem; font-weight: 700; color: var(--primary); margin: 10px 0; }
         .kpi-desc { font-size: 0.8rem; color: var(--text-light); }
         .dashboard-grid { display: grid; grid-template-columns: 1fr; gap: 30px; }
-        @media (min-width: 1024px) { .dashboard-grid { grid-template-columns: 350px 1fr; } }
+        @media (min-width: 1024px) {
+    .dashboard-grid {
+        grid-template-columns: 280px minmax(0, 1fr);
+        gap: 20px;
+    }
+}
         .sidebar-card { background-color: var(--bg-card); border-radius: 12px; padding: 24px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); border: 1px solid var(--border); height: fit-content; }
         .filter-group { margin-bottom: 20px; }
         .filter-label { display: block; font-size: 0.9rem; font-weight: 600; margin-bottom: 10px; color: var(--primary); }
@@ -239,6 +244,12 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     cursor: crosshair;
 }
 
+.monthly-point:focus-visible,
+.monthly-bar:focus-visible {
+    stroke: #111;
+    stroke-width: 3;
+}
+
 .monthly-legend {
     display: flex;
     justify-content: center;
@@ -375,7 +386,13 @@ HTML_TEMPLATE = """<!DOCTYPE html>
             </div>
             <div class="main-card">
                 <div class="card-header-flex">
-                    <div class="card-title" id="table-title">Análisis de Cobertura Global</div>
+                    <div>
+    <div class="card-title" id="table-title">Análisis de Cobertura Global</div>
+    <div id="report-period" style="font-size:.75rem;color:var(--text-light);margin-top:4px">
+        Datos de noviembre 2026 · corte al 23/11/2026
+    </div>
+</div>
+
                     <div><button class="btn-action" onclick="exportCSV()">Exportar CSV Limpio</button></div>
                 </div>
                 <div class="visual-chart-container" id="visual-chart-box">
@@ -394,7 +411,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     <div class="monthly-heading">
         <h2>Evolutivo Mensual</h2>
         <p>
-            Enero–septiembre de 2026. Pasa el cursor por un punto o una barra
+            Enero–Noviembre de 2026. Pasa el cursor por un punto o una barra
             para consultar el valor exacto.
         </p>
     </div>
@@ -719,45 +736,65 @@ document.getElementById('kpi-alerts-desc').textContent =
             }
         }
 
-        function exportCSV() {
-    const rows = currentFilteredData;
+       function exportCSV() {
     const isCampaignView = currentTab === 'campana';
+    const isMonthlyView = currentTab === 'evolutivo';
 
-    const header = isCampaignView
+    if (isMonthlyView) {
+        alert('El CSV corresponde al análisis de noviembre; el evolutivo mensual no se exporta desde este botón.');
+        return;
+    }
+
+    const contractSelect = document.getElementById('contract-filter');
+    const campaignSelect = document.getElementById('campaign-filter');
+
+    const contractName =
+        contractSelect.value === 'all'
+            ? 'Todos los contratos'
+            : contractSelect.selectedOptions[0].textContent;
+
+    const campaignName = isCampaignView
+        ? (campaignSelect.value === 'all'
+            ? 'Todas las campañas'
+            : campaignSelect.selectedOptions[0].textContent)
+        : '';
+
+    const headers = isCampaignView
         ? ['Contrato', 'Campaña', 'LINK con GCLID', 'LOGS', 'Ratio Cobertura']
         : ['Contrato', 'LINK con GCLID', 'LOGS', 'Ratio Cobertura'];
 
     const csvCell = value =>
         '"' + String(value ?? '').replace(/"/g, '""') + '"';
 
+    const metadata = [
+        ['Pestaña', isCampaignView ? 'Desglose por Campaña' : 'Vista General'],
+        ['Periodo', 'Noviembre 2026'],
+        ['Fecha de corte', '23/11/2026'],
+        ['Filtro de contrato', contractName]
+    ];
+
+    if (isCampaignView) {
+        metadata.push(['Filtro de campaña', campaignName]);
+    }
+
     const lines = [
-        header.map(csvCell).join(';'),
-        ...rows.map(item => {
+        ...metadata.map(row => row.map(csvCell).join(';')),
+        '',
+        headers.map(csvCell).join(';'),
+        ...currentFilteredData.map(item => {
             const values = isCampaignView
-                ? [
-                    item.contrato,
-                    item.campana,
-                    item.gclid,
-                    item.logs,
-                    item.ratio
-                ]
-                : [
-                    item.contrato,
-                    item.gclid,
-                    item.logs,
-                    item.ratio
-                ];
+                ? [item.contrato, item.campana, item.gclid, item.logs, item.ratio]
+                : [item.contrato, item.gclid, item.logs, item.ratio];
 
             return values.map(csvCell).join(';');
         })
     ];
 
-    const blob = new Blob(
-    ['\\uFEFF' + lines.join('\\r\\n')],
-    { type: 'text/csv;charset=utf-8' }
-);
+    const csvText =
+        String.fromCharCode(0xFEFF) +
+        lines.join(String.fromCharCode(13, 10));
 
-
+    const blob = new Blob([csvText], { type: 'text/csv;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
 
@@ -769,6 +806,7 @@ document.getElementById('kpi-alerts-desc').textContent =
     link.click();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
+
 
 // Datos mensuales: bloque total Contratación Offline CMB/900.
 // No participan en las barras, filtros ni exportación CSV del análisis principal.
@@ -810,19 +848,20 @@ function updateMonthlyKPIs() {
     document.getElementById('kpi-alerts').textContent = numberFormat.format(monthlyAlerts);
 
     document.getElementById('kpi-link-label').textContent = 'GCLID acumulado';
-    document.getElementById('kpi-link-desc').textContent =
-        `Acumulado mensual · ${monthlyData.length} meses`;
+document.getElementById('kpi-link-desc').textContent =
+    `Acumulado enero–noviembre de 2026 · ${monthlyData.length} meses`;
 
-    document.getElementById('kpi-logs-label').textContent = 'LOGS acumulados';
-    document.getElementById('kpi-logs-desc').textContent =
-        `Acumulado mensual · ${monthlyData.length} meses`;
+document.getElementById('kpi-logs-label').textContent = 'LOGS acumulados';
+document.getElementById('kpi-logs-desc').textContent =
+    `Acumulado enero–noviembre de 2026 · ${monthlyData.length} meses`;
 
-    document.getElementById('kpi-cobertura-label').textContent = 'Cobertura LOGS / GCLID';
-    document.getElementById('kpi-cobertura-desc').textContent =
-        'Ratio del acumulado mensual';
+document.getElementById('kpi-cobertura-label').textContent = 'Cobertura LOGS / GCLID';
+document.getElementById('kpi-cobertura-desc').textContent =
+    'LOGS acumulados ÷ GCLID acumulado';
 
-    document.getElementById('kpi-alerts-desc').textContent =
-        'Meses fuera del rango óptimo (90%–105%)';
+document.getElementById('kpi-alerts-desc').textContent =
+    `Meses fuera del rango 90%–105% · ${monthlyData.length} meses analizados`;
+
 }
 
 const monthlyNumber = value =>
@@ -849,7 +888,8 @@ function drawMonthlyLineChart(targetId, series, isPercent=false) {
     const x=index=>L+index*(plotW/(monthlyData.length-1));
     const y=value=>T+plotH-(value/maxValue)*plotH;
 
-    let svg=`<svg class="monthly-chart" viewBox="0 0 ${W} ${H}" role="img">`;
+    let svg=`<svg class="monthly-chart" viewBox="0 0 ${W} ${H}"
+    role="group" aria-label="Gráfico mensual de LOGS y GAds">`;
 
     ticks.forEach(value=>{
         svg+=`<line class="monthly-gridline" x1="${L}" y1="${y(value)}" x2="${W-R}" y2="${y(value)}"></line>`;
@@ -867,14 +907,18 @@ function drawMonthlyLineChart(targetId, series, isPercent=false) {
         item.values.forEach((value,index)=>{
             const displayValue=isPercent?monthlyPercent(value):monthlyNumber(value);
             svg+=`<circle class="monthly-point"
-                tabindex="0"
-                cx="${x(index)}"
-                cy="${y(value)}"
-                r="4.5"
-                fill="${item.color}"
-                data-month="${monthlyData[index].month}"
-                data-series="${item.label}"
-                data-value="${displayValue}"></circle>`;
+    tabindex="0"
+    role="img"
+    aria-label="${monthlyData[index].month}, ${item.label}: ${displayValue}"
+    cx="${x(index)}"
+    cy="${y(value)}"
+    r="4.5"
+    fill="${item.color}"
+    data-month="${monthlyData[index].month}"
+    data-series="${item.label}"
+    data-value="${displayValue}">
+    <title>${monthlyData[index].month} · ${item.label}: ${displayValue}</title>
+</circle>`;
         });
     });
 
@@ -908,20 +952,36 @@ function drawMonthlyBars(targetId) {
         svg+=`<text class="monthly-month" x="${center}" y="${H-10}" text-anchor="middle">${item.month}</text>`;
 
         svg+=`<rect class="monthly-bar"
-            tabindex="0"
-            x="${center-barW-1}" y="${y(item.logs)}"
-            width="${barW}" height="${logsHeight}" rx="3"
-            fill="#e31b23"
-            data-month="${item.month}" data-series="LOGS"
-            data-value="${monthlyNumber(item.logs)}"></rect>`;
+    tabindex="0"
+    role="img"
+    aria-label="${item.month}, LOGS: ${monthlyNumber(item.logs)}"
+    x="${center-barW-1}"
+    y="${y(item.logs)}"
+    width="${barW}"
+    height="${logsHeight}"
+    rx="3"
+    fill="#e31b23"
+    data-month="${item.month}"
+    data-series="LOGS"
+    data-value="${monthlyNumber(item.logs)}">
+    <title>${item.month} · LOGS: ${monthlyNumber(item.logs)}</title>
+</rect>`;
 
         svg+=`<rect class="monthly-bar"
-            tabindex="0"
-            x="${center+1}" y="${y(item.gads)}"
-            width="${barW}" height="${gadsHeight}" rx="3"
-            fill="#3672bd"
-            data-month="${item.month}" data-series="GAds"
-            data-value="${monthlyNumber(item.gads)}"></rect>`;
+    tabindex="0"
+    role="img"
+    aria-label="${item.month}, GAds: ${monthlyNumber(item.gads)}"
+    x="${center+1}"
+    y="${y(item.gads)}"
+    width="${barW}"
+    height="${gadsHeight}"
+    rx="3"
+    fill="#3672bd"
+    data-month="${item.month}"
+    data-series="GAds"
+    data-value="${monthlyNumber(item.gads)}">
+    <title>${item.month} · GAds: ${monthlyNumber(item.gads)}</title>
+</rect>`;
     });
 
     svg+='</svg>';
