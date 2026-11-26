@@ -59,14 +59,14 @@ HTML_TEMPLATE = """<!DOCTYPE html>
             box-shadow: 0 2px 8px rgba(0,0,0,0.04); 
         }
         .logo-area { display: flex; align-items: center; gap: 15px; }
-        .logo-havas { 
-            font-weight: 900; 
-            font-size: 1.6rem; 
-            letter-spacing: 3px; 
-            color: var(--havas-red); 
-            border-right: 2px solid var(--border); 
-            padding-right: 15px; 
-        }
+        .logo-havas {
+    display: block;
+    width: 110px;
+    height: 42px;
+    object-fit: contain;
+    border-right: 2px solid var(--border);
+    padding-right: 15px;
+} 
         .project-title { 
             font-size: 1.1rem; 
             font-weight: 700; 
@@ -307,7 +307,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 <body>
     <header>
         <div class="logo-area">
-            <span class="logo-havas">HAVAS</span>
+            <img class="logo-havas" src="havas-logo.png" alt="HAVAS">
             <span class="project-title">Auditor de Conversiones (GCLID vs LOGS)</span>
         </div>
         <div><span class="badge-client">Cliente: Naturgy Energía</span></div>
