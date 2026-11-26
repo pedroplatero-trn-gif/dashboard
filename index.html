@@ -131,34 +131,142 @@
         .tab-btn.active { color: var(--primary); border-bottom-color: var(--havas-red); }
         .tab-nav { display: flex; gap: 15px; margin-bottom: 25px; border-bottom: 1px solid var(--border); }
         .python-sync-box { background: #edf2f7; border-radius: 8px; padding: 15px; font-size: 0.8rem; margin-top: 25px; border: 1px solid #cbd5e0; }
+        /* Evolutivo mensual: sección separada de filtros, barras y CSV */
+#monthly-view {
+    display: none;
+}
+
+.monthly-heading {
+    margin: 0 0 16px;
+}
+
+.monthly-heading h2 {
+    margin: 4px 0;
+    font-size: 1.4rem;
+}
+
+.monthly-heading p {
+    color: var(--text-light);
+    font-size: 0.85rem;
+}
+
+.monthly-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.monthly-card {
+    min-width: 0;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px;
+    box-shadow: 0 4px 6px rgba(0,0,0,.02);
+}
+
+.monthly-card h3 {
+    font-size: 1rem;
+    margin: 0 0 3px;
+}
+
+.monthly-card p {
+    color: var(--text-light);
+    font-size: .78rem;
+    margin: 0 0 8px;
+}
+
+.monthly-chart {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.monthly-gridline {
+    stroke: #e7ebf1;
+    stroke-width: 1;
+}
+
+.monthly-axis {
+    fill: #718096;
+    font-size: 10px;
+}
+
+.monthly-month {
+    fill: #64748b;
+    font-size: 10px;
+}
+
+.monthly-line {
+    fill: none;
+    stroke-width: 2.7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.monthly-point {
+    stroke: #fff;
+    stroke-width: 1.7;
+    cursor: crosshair;
+}
+
+.monthly-bar {
+    cursor: crosshair;
+}
+
+.monthly-legend {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 5px;
+    color: var(--text-light);
+    font-size: .72rem;
+}
+
+.monthly-legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.monthly-swatch {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+}
+
+.monthly-tooltip {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    pointer-events: none;
+    max-width: 290px;
+    padding: 8px 10px;
+    border-radius: 7px;
+    background: #17212b;
+    color: #fff;
+    box-shadow: 0 8px 22px rgba(16,32,48,.25);
+    font-size: 12px;
+    line-height: 1.45;
+}
+
+.monthly-tooltip strong {
+    display: block;
+    margin-bottom: 2px;
+}
+
+@media (max-width: 760px) {
+    .monthly-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .monthly-card {
+        padding: 14px;
+    }
+}
+
     </style>
-
-<!-- EVOLUTIVO_CSS_START -->
-<style>
-.evo-section{max-width:1400px;margin:30px auto;padding:0 20px;color:#17212b}
-.evo-heading{margin-bottom:16px}
-.evo-eyebrow{font-size:10px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:#718096}
-.evo-heading h2{font-size:22px;letter-spacing:-.03em;margin:4px 0}
-.evo-heading p{font-size:12px;color:#64748b;margin:0}
-.evo-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
-.evo-card{min-width:0;background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:17px;box-shadow:0 4px 10px rgba(0,0,0,.035)}
-.evo-card h3{font-size:14px;margin:0 0 3px}
-.evo-subtitle{font-size:11px;color:#64748b;margin:0 0 8px}
-.evo-chart{width:100%;height:auto;display:block}
-.evo-gridline{stroke:#e7ebf1;stroke-width:1}
-.evo-axis{fill:#7a8698;font-size:10px}
-.evo-month{fill:#69768a;font-size:10px}
-.evo-line{fill:none;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
-.evo-point{stroke:#fff;stroke-width:1.5}
-.evo-legend{display:flex;justify-content:center;gap:18px;flex-wrap:wrap;margin-top:4px;font-size:10px;color:#68758a}
-.evo-legend-item{display:inline-flex;align-items:center;gap:6px}
-.evo-dot{width:9px;height:9px;border-radius:50%;display:inline-block}
-.evo-red{background:#e51c35}.evo-blue{background:#3672bd}
-.evo-note{margin:12px 0 0;font-size:10px;line-height:1.5;color:#728094}
-@media(max-width:760px){.evo-section{padding:0 12px}.evo-grid{grid-template-columns:1fr}.evo-card{padding:14px}}
-</style>
-<!-- EVOLUTIVO_CSS_END -->
-
 </head>
 <body>
     <header>
@@ -200,13 +308,15 @@
         <div class="tab-nav">
             <button id="btn-tab-normal" class="tab-btn active" onclick="switchTab('normal')">Vista General (Contratos)</button>
             <button id="btn-tab-campana" class="tab-btn" onclick="switchTab('campana')">Desglose por Campaña</button>
+            <button id="btn-tab-evolutivo" class="tab-btn"onclick="switchTab('evolutivo')">Evolutivo Mensual</button>
+
         </div>
         
         <div class="dashboard-grid">
             <div class="sidebar-card">
                 <h3 style="font-size: 1.05rem; margin-bottom: 20px; color: var(--primary);">Filtros de Análisis</h3>
                 <div class="filter-group">
-                    <label class="filter-label" for="contract-filter">Acción de conversión:</label>
+                    <label class="filter-label" for="contract-filter">Contrato o Producto:</label>
                     <select id="contract-filter" class="select-input" onchange="applyFilters()">
                         <option value="all">-- Todos los Contratos --</option>
                     </select>
@@ -242,6 +352,70 @@
                 </div>
             </div>
         </div>
+        <div id="monthly-view">
+    <div class="monthly-heading">
+        <h2>Evolutivo Mensual</h2>
+        <p>
+            Enero–septiembre de 2026. Pasa el cursor por un punto o una barra
+            para consultar el valor exacto.
+        </p>
+    </div>
+
+    <div class="monthly-grid">
+        <article class="monthly-card">
+            <h3>Conversiones LINK vs GCLID</h3>
+            <p>Volumen mensual</p>
+            <div id="monthly-link-chart"></div>
+            <div class="monthly-legend">
+                <span class="monthly-legend-item">
+                    <i class="monthly-swatch" style="background:#e31b23"></i>LINK total
+                </span>
+                <span class="monthly-legend-item">
+                    <i class="monthly-swatch" style="background:#3672bd"></i>LINK con GCLID
+                </span>
+            </div>
+        </article>
+
+        <article class="monthly-card">
+            <h3>Cobertura GCLID</h3>
+            <p>LINK con GCLID ÷ LINK sin CE</p>
+            <div id="monthly-gclid-chart"></div>
+            <div class="monthly-legend">
+                <span class="monthly-legend-item">
+                    <i class="monthly-swatch" style="background:#e31b23"></i>Cobertura GCLID
+                </span>
+            </div>
+        </article>
+
+        <article class="monthly-card">
+            <h3>LOGS vs conversiones de GAds</h3>
+            <p>Volumen mensual</p>
+            <div id="monthly-logs-chart"></div>
+            <div class="monthly-legend">
+                <span class="monthly-legend-item">
+                    <i class="monthly-swatch" style="background:#e31b23"></i>LOGS
+                </span>
+                <span class="monthly-legend-item">
+                    <i class="monthly-swatch" style="background:#3672bd"></i>GAds
+                </span>
+            </div>
+        </article>
+
+        <article class="monthly-card">
+            <h3>Cobertura de GAds</h3>
+            <p>GAds ÷ LOGS</p>
+            <div id="monthly-gads-chart"></div>
+            <div class="monthly-legend">
+                <span class="monthly-legend-item">
+                    <i class="monthly-swatch" style="background:#e31b23"></i>Cobertura GAds vs LOGS
+                </span>
+            </div>
+        </article>
+    </div>
+</div>
+
+<div id="monthly-tooltip" class="monthly-tooltip" role="status" aria-live="polite"></div>
+
     </div>
     <script>
         // DATOS INYECTADOS POR PYTHON
@@ -249,65 +423,79 @@
             {
                         "id": 1,
                         "contrato": "Contrato Luz - CMB/900 - Naturgy Energía (1)",
-                        "gclid": 22,
-                        "logs": 22,
+                        "gclid": 27,
+                        "logs": 27,
                         "ratio": 100.0
             },
             {
                         "id": 2,
                         "contrato": "Contrato Nuevo Luz - CMB/900 - Naturgy Energía (1)",
-                        "gclid": 480,
-                        "logs": 450,
-                        "ratio": 93.8
+                        "gclid": 669,
+                        "logs": 634,
+                        "ratio": 94.8
             },
             {
                         "id": 3,
                         "contrato": "Contrato Gas - CMB/900 - Naturgy Energía (1)",
-                        "gclid": 16,
-                        "logs": 16,
+                        "gclid": 20,
+                        "logs": 20,
                         "ratio": 100.0
             },
             {
                         "id": 4,
                         "contrato": "Contrato Nuevo Gas - CMB/900 - Naturgy Energía (1)",
-                        "gclid": 78,
-                        "logs": 79,
-                        "ratio": 101.3
+                        "gclid": 112,
+                        "logs": 113,
+                        "ratio": 100.9
             },
             {
                         "id": 5,
                         "contrato": "Contrato SVA - CMB/900 - Naturgy Energía (1)",
-                        "gclid": 3,
-                        "logs": 3,
+                        "gclid": 4,
+                        "logs": 4,
                         "ratio": 100.0
             },
             {
                         "id": 6,
                         "contrato": "Contrato Nuevo SVA - CMB/900 - Naturgy Energía (1)",
-                        "gclid": 227,
-                        "logs": 217,
-                        "ratio": 95.6
+                        "gclid": 317,
+                        "logs": 306,
+                        "ratio": 96.5
             },
             {
                         "id": 7,
                         "contrato": "Contratación Offline CMB/900 ",
-                        "gclid": 608,
-                        "logs": 567,
-                        "ratio": 93.3
+                        "gclid": 843,
+                        "logs": 796,
+                        "ratio": 94.4
             },
             {
                         "id": 8,
                         "contrato": "Contrato Nuevo Luz - CMB/900 -  PYMES Naturgy Energía",
-                        "gclid": 26,
-                        "logs": 21,
-                        "ratio": 80.8
+                        "gclid": 30,
+                        "logs": 25,
+                        "ratio": 83.3
             },
             {
                         "id": 9,
                         "contrato": "Contrato Nuevo Gas - CMB/900 -  PYMES Naturgy Energía",
-                        "gclid": 2,
-                        "logs": 2,
+                        "gclid": 3,
+                        "logs": 3,
                         "ratio": 100.0
+            },
+            {
+                        "id": 10,
+                        "contrato": "Lead -  CMB Energía",
+                        "gclid": 0,
+                        "logs": 0,
+                        "ratio": 0.0
+            },
+            {
+                        "id": 11,
+                        "contrato": "Lead -  Llamada 900 Energía",
+                        "gclid": 0,
+                        "logs": 0,
+                        "ratio": 0.0
             }
 ];
         const dataCampanas = [
@@ -321,8 +509,8 @@
             {
                         "contrato": "Contrato Luz - CMB/900 - Naturgy Energía (1)",
                         "campana": "NATURGY_GP_AO_GOO_SEA_MG_MARCA-TELEFONO_DFD",
-                        "gclid": 8,
-                        "logs": 8,
+                        "gclid": 9,
+                        "logs": 9,
                         "ratio": 100.0
             },
             {
@@ -363,15 +551,15 @@
             {
                         "contrato": "Contrato Luz - CMB/900 - Naturgy Energía (1)",
                         "campana": "NATURGY_GP_AO_SEA_G_MARCA-ENERGIA2 - MARCA-GEN",
-                        "gclid": 4,
-                        "logs": 4,
+                        "gclid": 5,
+                        "logs": 5,
                         "ratio": 100.0
             },
             {
                         "contrato": "Contrato Luz - CMB/900 - Naturgy Energía (1)",
                         "campana": "NATURGY_GP_AO_SEA_G_MARCA-ENERGIA2 - MARCA-LUZ",
-                        "gclid": 2,
-                        "logs": 2,
+                        "gclid": 3,
+                        "logs": 3,
                         "ratio": 100.0
             },
             {
@@ -384,8 +572,8 @@
             {
                         "contrato": "Contrato Luz - CMB/900 - Naturgy Energía (1)",
                         "campana": "NATURGY_GP_AO_SEA_G_MARCA-EXACTA - Mobile",
-                        "gclid": 1,
-                        "logs": 1,
+                        "gclid": 2,
+                        "logs": 2,
                         "ratio": 100.0
             },
             {
@@ -398,9 +586,9 @@
             {
                         "contrato": "Contrato Luz - CMB/900 - Naturgy Energía (1)",
                         "campana": "NATURGY_GP_AO_SEA_G_GEN-LUZ_CQS - GEN-LUZ2",
-                        "gclid": 0,
-                        "logs": 0,
-                        "ratio": 0.0
+                        "gclid": 1,
+                        "logs": 1,
+                        "ratio": 100.0
             },
             {
                         "contrato": "Contrato Luz - CMB/900 - Naturgy Energía (1)",
@@ -480,18 +668,39 @@
                         "ratio": 0.0
             },
             {
+                        "contrato": "Contrato Luz - CMB/900 - Naturgy Energía (1)",
+                        "campana": "NATURGY_GP_AO_SEA_G_MARCA-ENERGIA - TEST-LANDING",
+                        "gclid": 0,
+                        "logs": 0,
+                        "ratio": 0.0
+            },
+            {
+                        "contrato": "Contrato Luz - CMB/900 - Naturgy Energía (1)",
+                        "campana": "Lead -  CMB Energía",
+                        "gclid": 0,
+                        "logs": 0,
+                        "ratio": 0.0
+            },
+            {
+                        "contrato": "Contrato Luz - CMB/900 - Naturgy Energía (1)",
+                        "campana": "Lead -  Llamada 900 Energía",
+                        "gclid": 0,
+                        "logs": 0,
+                        "ratio": 0.0
+            },
+            {
                         "contrato": "Contrato Nuevo Luz - CMB/900 - Naturgy Energía (1)",
                         "campana": "202309_EnergiaQ4_SEA_PMAX-V2",
-                        "gclid": 28,
-                        "logs": 28,
+                        "gclid": 42,
+                        "logs": 42,
                         "ratio": 100.0
             },
             {
                         "contrato": "Contrato Nuevo Luz - CMB/900 - Naturgy Energía (1)",
                         "campana": "NATURGY_GP_AO_GOO_SEA_MG_MARCA-TELEFONO_DFD",
-                        "gclid": 147,
-                        "logs": 135,
-                        "ratio": 91.8
+                        "gclid": 201,
+                        "logs": 187,
+                        "ratio": 93.0
             },
             {
                         "contrato": "Contrato Nuevo Luz - CMB/900 - Naturgy Energía (1)",
@@ -510,16 +719,16 @@
             {
                         "contrato": "Contrato Nuevo Luz - CMB/900 - Naturgy Energía (1)",
                         "campana": "NATURGY_GP_AO_SEA_G_MARCA-CLIENTES",
-                        "gclid": 66,
-                        "logs": 62,
-                        "ratio": 93.9
+                        "gclid": 102,
+                        "logs": 97,
+                        "ratio": 95.1
             },
             {
                         "contrato": "Contrato Nuevo Luz - CMB/900 - Naturgy Energía (1)",
                         "campana": "NATURGY_GP_AO_GOO_SEA_MG_PYMES_MARCA-TARIFA-GRANDES-EMPRESAS",
                         "gclid": 1,
-                        "logs": 0,
-                        "ratio": 0.0
+                        "logs": 1,
+                        "ratio": 100.0
             },
             {
                         "contrato": "Contrato Nuevo Luz - CMB/900 - Naturgy Energía (1)",
@@ -531,30 +740,30 @@
             {
                         "contrato": "Contrato Nuevo Luz - CMB/900 - Naturgy Energía (1)",
                         "campana": "NATURGY_GP_AO_SEA_G_MARCA-ENERGIA2 - MARCA-GEN",
-                        "gclid": 29,
-                        "logs": 26,
-                        "ratio": 89.7
+                        "gclid": 38,
+                        "logs": 35,
+                        "ratio": 92.1
             },
             {
                         "contrato": "Contrato Nuevo Luz - CMB/900 - Naturgy Energía (1)",
                         "campana": "NATURGY_GP_AO_SEA_G_MARCA-ENERGIA2 - MARCA-LUZ",
-                        "gclid": 21,
-                        "logs": 20,
-                        "ratio": 95.2
+                        "gclid": 28,
+                        "logs": 28,
+                        "ratio": 100.0
             },
             {
                         "contrato": "Contrato Nuevo Luz - CMB/900 - Naturgy Energía (1)",
                         "campana": "NATURGY_GP_AO_SEA_G_MARCA-EXACTA - Desktop",
-                        "gclid": 15,
-                        "logs": 15,
+                        "gclid": 25,
+                        "logs": 25,
                         "ratio": 100.0
             },
             {
                         "contrato": "Contrato Nuevo Luz - CMB/900 - Naturgy Energía (1)",
                         "campana": "NATURGY_GP_AO_SEA_G_MARCA-EXACTA - Mobile",
-                        "gclid": 106,
-                        "logs": 100,
-                        "ratio": 94.3
+                        "gclid": 148,
+                        "logs": 140,
+                        "ratio": 94.6
             },
             {
                         "contrato": "Contrato Nuevo Luz - CMB/900 - Naturgy Energía (1)",
@@ -566,15 +775,15 @@
             {
                         "contrato": "Contrato Nuevo Luz - CMB/900 - Naturgy Energía (1)",
                         "campana": "NATURGY_GP_AO_SEA_G_GEN-LUZ_CQS - GEN-LUZ2",
-                        "gclid": 17,
-                        "logs": 18,
-                        "ratio": 105.9
+                        "gclid": 28,
+                        "logs": 28,
+                        "ratio": 100.0
             },
             {
                         "contrato": "Contrato Nuevo Luz - CMB/900 - Naturgy Energía (1)",
                         "campana": "NATURGY_GP_AO_SEA_G_MARCA-PRECIO - TARIFAS",
-                        "gclid": 9,
-                        "logs": 9,
+                        "gclid": 11,
+                        "logs": 11,
                         "ratio": 100.0
             },
             {
@@ -594,15 +803,15 @@
             {
                         "contrato": "Contrato Nuevo Luz - CMB/900 - Naturgy Energía (1)",
                         "campana": "NATURGY_GP_AO_SEA_G_MARCA-PRECIO - PRECIO",
-                        "gclid": 14,
-                        "logs": 13,
-                        "ratio": 92.9
+                        "gclid": 15,
+                        "logs": 14,
+                        "ratio": 93.3
             },
             {
                         "contrato": "Contrato Nuevo Luz - CMB/900 - Naturgy Energía (1)",
                         "campana": "NATURGY_GP_AO_SEA_G_GEN-LUZ_CQS - GEN-LUZ-GAS2",
-                        "gclid": 4,
-                        "logs": 4,
+                        "gclid": 7,
+                        "logs": 7,
                         "ratio": 100.0
             },
             {
@@ -648,6 +857,27 @@
                         "ratio": 100.0
             },
             {
+                        "contrato": "Contrato Nuevo Luz - CMB/900 - Naturgy Energía (1)",
+                        "campana": "NATURGY_GP_AO_SEA_G_MARCA-ENERGIA - TEST-LANDING",
+                        "gclid": 0,
+                        "logs": 0,
+                        "ratio": 0.0
+            },
+            {
+                        "contrato": "Contrato Nuevo Luz - CMB/900 - Naturgy Energía (1)",
+                        "campana": "Lead -  CMB Energía",
+                        "gclid": 0,
+                        "logs": 0,
+                        "ratio": 0.0
+            },
+            {
+                        "contrato": "Contrato Nuevo Luz - CMB/900 - Naturgy Energía (1)",
+                        "campana": "Lead -  Llamada 900 Energía",
+                        "gclid": 0,
+                        "logs": 0,
+                        "ratio": 0.0
+            },
+            {
                         "contrato": "Contrato Gas - CMB/900 - Naturgy Energía (1)",
                         "campana": "202309_EnergiaQ4_SEA_PMAX-V2",
                         "gclid": 0,
@@ -657,8 +887,8 @@
             {
                         "contrato": "Contrato Gas - CMB/900 - Naturgy Energía (1)",
                         "campana": "NATURGY_GP_AO_GOO_SEA_MG_MARCA-TELEFONO_DFD",
-                        "gclid": 7,
-                        "logs": 7,
+                        "gclid": 9,
+                        "logs": 9,
                         "ratio": 100.0
             },
             {
@@ -678,8 +908,8 @@
             {
                         "contrato": "Contrato Gas - CMB/900 - Naturgy Energía (1)",
                         "campana": "NATURGY_GP_AO_SEA_G_MARCA-CLIENTES",
-                        "gclid": 3,
-                        "logs": 3,
+                        "gclid": 4,
+                        "logs": 4,
                         "ratio": 100.0
             },
             {
@@ -699,8 +929,8 @@
             {
                         "contrato": "Contrato Gas - CMB/900 - Naturgy Energía (1)",
                         "campana": "NATURGY_GP_AO_SEA_G_MARCA-ENERGIA2 - MARCA-GEN",
-                        "gclid": 3,
-                        "logs": 3,
+                        "gclid": 4,
+                        "logs": 4,
                         "ratio": 100.0
             },
             {
@@ -816,417 +1046,480 @@
                         "ratio": 0.0
             },
             {
+                        "contrato": "Contrato Gas - CMB/900 - Naturgy Energía (1)",
+                        "campana": "NATURGY_GP_AO_SEA_G_MARCA-ENERGIA - TEST-LANDING",
+                        "gclid": 0,
+                        "logs": 0,
+                        "ratio": 0.0
+            },
+            {
+                        "contrato": "Contrato Gas - CMB/900 - Naturgy Energía (1)",
+                        "campana": "Lead -  CMB Energía",
+                        "gclid": 0,
+                        "logs": 0,
+                        "ratio": 0.0
+            },
+            {
+                        "contrato": "Contrato Gas - CMB/900 - Naturgy Energía (1)",
+                        "campana": "Lead -  Llamada 900 Energía",
+                        "gclid": 0,
+                        "logs": 0,
+                        "ratio": 0.0
+            },
+            {
                         "contrato": "Contrato Nuevo Gas - CMB/900 - Naturgy Energía (1)",
                         "campana": "202309_EnergiaQ4_SEA_PMAX-V2",
+                        "gclid": 4,
+                        "logs": 4,
+                        "ratio": 100.0
+            },
+            {
+                        "contrato": "Contrato Nuevo Gas - CMB/900 - Naturgy Energía (1)",
+                        "campana": "NATURGY_GP_AO_GOO_SEA_MG_MARCA-TELEFONO_DFD",
+                        "gclid": 29,
+                        "logs": 29,
+                        "ratio": 100.0
+            },
+            {
+                        "contrato": "Contrato Nuevo Gas - CMB/900 - Naturgy Energía (1)",
+                        "campana": "NATURGY_GP_AO_SEA_G_GEN-GAS_CQS - GEN-GAS-GASNATURAL",
+                        "gclid": 0,
+                        "logs": 0,
+                        "ratio": 0.0
+            },
+            {
+                        "contrato": "Contrato Nuevo Gas - CMB/900 - Naturgy Energía (1)",
+                        "campana": "NATURGY_GP_AO_SEA_G_GEN-GAS_CQS - GEN-GAS-GEN-GAS",
+                        "gclid": 0,
+                        "logs": 0,
+                        "ratio": 0.0
+            },
+            {
+                        "contrato": "Contrato Nuevo Gas - CMB/900 - Naturgy Energía (1)",
+                        "campana": "NATURGY_GP_AO_SEA_G_MARCA-CLIENTES",
+                        "gclid": 22,
+                        "logs": 22,
+                        "ratio": 100.0
+            },
+            {
+                        "contrato": "Contrato Nuevo Gas - CMB/900 - Naturgy Energía (1)",
+                        "campana": "NATURGY_GP_AO_GOO_SEA_MG_PYMES_MARCA-TARIFA-GRANDES-EMPRESAS",
+                        "gclid": 0,
+                        "logs": 0,
+                        "ratio": 0.0
+            },
+            {
+                        "contrato": "Contrato Nuevo Gas - CMB/900 - Naturgy Energía (1)",
+                        "campana": "NATURGY_GP_AO_SEA_G_MARCA-ENERGIA2 - MARCA-GAS",
+                        "gclid": 0,
+                        "logs": 0,
+                        "ratio": 0.0
+            },
+            {
+                        "contrato": "Contrato Nuevo Gas - CMB/900 - Naturgy Energía (1)",
+                        "campana": "NATURGY_GP_AO_SEA_G_MARCA-ENERGIA2 - MARCA-GEN",
+                        "gclid": 12,
+                        "logs": 12,
+                        "ratio": 100.0
+            },
+            {
+                        "contrato": "Contrato Nuevo Gas - CMB/900 - Naturgy Energía (1)",
+                        "campana": "NATURGY_GP_AO_SEA_G_MARCA-ENERGIA2 - MARCA-LUZ",
                         "gclid": 1,
                         "logs": 1,
                         "ratio": 100.0
             },
             {
                         "contrato": "Contrato Nuevo Gas - CMB/900 - Naturgy Energía (1)",
+                        "campana": "NATURGY_GP_AO_SEA_G_MARCA-EXACTA - Desktop",
+                        "gclid": 3,
+                        "logs": 3,
+                        "ratio": 100.0
+            },
+            {
+                        "contrato": "Contrato Nuevo Gas - CMB/900 - Naturgy Energía (1)",
+                        "campana": "NATURGY_GP_AO_SEA_G_MARCA-EXACTA - Mobile",
+                        "gclid": 31,
+                        "logs": 32,
+                        "ratio": 103.2
+            },
+            {
+                        "contrato": "Contrato Nuevo Gas - CMB/900 - Naturgy Energía (1)",
+                        "campana": "NATURGY_GP_AO_SEA_G_MARCA-TARIFA-SOLAR",
+                        "gclid": 0,
+                        "logs": 0,
+                        "ratio": 0.0
+            },
+            {
+                        "contrato": "Contrato Nuevo Gas - CMB/900 - Naturgy Energía (1)",
+                        "campana": "NATURGY_GP_AO_SEA_G_GEN-LUZ_CQS - GEN-LUZ2",
+                        "gclid": 1,
+                        "logs": 1,
+                        "ratio": 100.0
+            },
+            {
+                        "contrato": "Contrato Nuevo Gas - CMB/900 - Naturgy Energía (1)",
+                        "campana": "NATURGY_GP_AO_SEA_G_MARCA-PRECIO - TARIFAS",
+                        "gclid": 0,
+                        "logs": 0,
+                        "ratio": 0.0
+            },
+            {
+                        "contrato": "Contrato Nuevo Gas - CMB/900 - Naturgy Energía (1)",
+                        "campana": "NATURGY_GP_AO_SEA_G_MARCA-ENERGIA - MARCA-LUZ-GAS2",
+                        "gclid": 2,
+                        "logs": 2,
+                        "ratio": 100.0
+            },
+            {
+                        "contrato": "Contrato Nuevo Gas - CMB/900 - Naturgy Energía (1)",
+                        "campana": "NATURGY_GP_AO_SEA_G_GEN-LUZ_CQS - TARIFA-SOLAR2",
+                        "gclid": 0,
+                        "logs": 0,
+                        "ratio": 0.0
+            },
+            {
+                        "contrato": "Contrato Nuevo Gas - CMB/900 - Naturgy Energía (1)",
+                        "campana": "NATURGY_GP_AO_SEA_G_MARCA-PRECIO - PRECIO",
+                        "gclid": 0,
+                        "logs": 0,
+                        "ratio": 0.0
+            },
+            {
+                        "contrato": "Contrato Nuevo Gas - CMB/900 - Naturgy Energía (1)",
+                        "campana": "NATURGY_GP_AO_SEA_G_GEN-LUZ_CQS - GEN-LUZ-GAS2",
+                        "gclid": 5,
+                        "logs": 5,
+                        "ratio": 100.0
+            },
+            {
+                        "contrato": "Contrato Nuevo Gas - CMB/900 - Naturgy Energía (1)",
+                        "campana": "NATURGY_GP_AO_SEA_G_MARCA-GAS_CQS - GAS",
+                        "gclid": 0,
+                        "logs": 0,
+                        "ratio": 0.0
+            },
+            {
+                        "contrato": "Contrato Nuevo Gas - CMB/900 - Naturgy Energía (1)",
+                        "campana": "NATURGY_GP_AO_GOO_SEA_MG_PYMES_MARCA",
+                        "gclid": 0,
+                        "logs": 0,
+                        "ratio": 0.0
+            },
+            {
+                        "contrato": "Contrato Nuevo Gas - CMB/900 - Naturgy Energía (1)",
+                        "campana": "NATURGY_GP_AO_GOO_SEA_MG_PYMES_MARCA-TARIFA",
+                        "gclid": 0,
+                        "logs": 0,
+                        "ratio": 0.0
+            },
+            {
+                        "contrato": "Contrato Nuevo Gas - CMB/900 - Naturgy Energía (1)",
+                        "campana": "NATURGY_GP_AO_GOO_SEA_MG_PYMES_GEN-TARIFA-GRANDES-EMPRESAS",
+                        "gclid": 0,
+                        "logs": 0,
+                        "ratio": 0.0
+            },
+            {
+                        "contrato": "Contrato Nuevo Gas - CMB/900 - Naturgy Energía (1)",
+                        "campana": "NATURGY_GP_AO_GOO_SEA_MG_PYMES_GEN",
+                        "gclid": 1,
+                        "logs": 1,
+                        "ratio": 100.0
+            },
+            {
+                        "contrato": "Contrato Nuevo Gas - CMB/900 - Naturgy Energía (1)",
+                        "campana": "NATURGY_GP_AO_GOO_SEA_MG_PYMES_GEN-EMPRESAS",
+                        "gclid": 1,
+                        "logs": 1,
+                        "ratio": 100.0
+            },
+            {
+                        "contrato": "Contrato Nuevo Gas - CMB/900 - Naturgy Energía (1)",
+                        "campana": "NATURGY_GP_AO_SEA_G_MARCA-ENERGIA - TEST-LANDING",
+                        "gclid": 0,
+                        "logs": 0,
+                        "ratio": 0.0
+            },
+            {
+                        "contrato": "Contrato Nuevo Gas - CMB/900 - Naturgy Energía (1)",
+                        "campana": "Lead -  CMB Energía",
+                        "gclid": 0,
+                        "logs": 0,
+                        "ratio": 0.0
+            },
+            {
+                        "contrato": "Contrato Nuevo Gas - CMB/900 - Naturgy Energía (1)",
+                        "campana": "Lead -  Llamada 900 Energía",
+                        "gclid": 0,
+                        "logs": 0,
+                        "ratio": 0.0
+            },
+            {
+                        "contrato": "Contrato SVA - CMB/900 - Naturgy Energía (1)",
+                        "campana": "202309_EnergiaQ4_SEA_PMAX-V2",
+                        "gclid": 0,
+                        "logs": 0,
+                        "ratio": 0.0
+            },
+            {
+                        "contrato": "Contrato SVA - CMB/900 - Naturgy Energía (1)",
                         "campana": "NATURGY_GP_AO_GOO_SEA_MG_MARCA-TELEFONO_DFD",
+                        "gclid": 0,
+                        "logs": 0,
+                        "ratio": 0.0
+            },
+            {
+                        "contrato": "Contrato SVA - CMB/900 - Naturgy Energía (1)",
+                        "campana": "NATURGY_GP_AO_SEA_G_GEN-GAS_CQS - GEN-GAS-GASNATURAL",
+                        "gclid": 0,
+                        "logs": 0,
+                        "ratio": 0.0
+            },
+            {
+                        "contrato": "Contrato SVA - CMB/900 - Naturgy Energía (1)",
+                        "campana": "NATURGY_GP_AO_SEA_G_GEN-GAS_CQS - GEN-GAS-GEN-GAS",
+                        "gclid": 0,
+                        "logs": 0,
+                        "ratio": 0.0
+            },
+            {
+                        "contrato": "Contrato SVA - CMB/900 - Naturgy Energía (1)",
+                        "campana": "NATURGY_GP_AO_SEA_G_MARCA-CLIENTES",
+                        "gclid": 1,
+                        "logs": 1,
+                        "ratio": 100.0
+            },
+            {
+                        "contrato": "Contrato SVA - CMB/900 - Naturgy Energía (1)",
+                        "campana": "NATURGY_GP_AO_GOO_SEA_MG_PYMES_MARCA-TARIFA-GRANDES-EMPRESAS",
+                        "gclid": 0,
+                        "logs": 0,
+                        "ratio": 0.0
+            },
+            {
+                        "contrato": "Contrato SVA - CMB/900 - Naturgy Energía (1)",
+                        "campana": "NATURGY_GP_AO_SEA_G_MARCA-ENERGIA2 - MARCA-GAS",
+                        "gclid": 0,
+                        "logs": 0,
+                        "ratio": 0.0
+            },
+            {
+                        "contrato": "Contrato SVA - CMB/900 - Naturgy Energía (1)",
+                        "campana": "NATURGY_GP_AO_SEA_G_MARCA-ENERGIA2 - MARCA-GEN",
+                        "gclid": 0,
+                        "logs": 0,
+                        "ratio": 0.0
+            },
+            {
+                        "contrato": "Contrato SVA - CMB/900 - Naturgy Energía (1)",
+                        "campana": "NATURGY_GP_AO_SEA_G_MARCA-ENERGIA2 - MARCA-LUZ",
+                        "gclid": 1,
+                        "logs": 1,
+                        "ratio": 100.0
+            },
+            {
+                        "contrato": "Contrato SVA - CMB/900 - Naturgy Energía (1)",
+                        "campana": "NATURGY_GP_AO_SEA_G_MARCA-EXACTA - Desktop",
+                        "gclid": 0,
+                        "logs": 0,
+                        "ratio": 0.0
+            },
+            {
+                        "contrato": "Contrato SVA - CMB/900 - Naturgy Energía (1)",
+                        "campana": "NATURGY_GP_AO_SEA_G_MARCA-EXACTA - Mobile",
+                        "gclid": 0,
+                        "logs": 0,
+                        "ratio": 0.0
+            },
+            {
+                        "contrato": "Contrato SVA - CMB/900 - Naturgy Energía (1)",
+                        "campana": "NATURGY_GP_AO_SEA_G_MARCA-TARIFA-SOLAR",
+                        "gclid": 0,
+                        "logs": 0,
+                        "ratio": 0.0
+            },
+            {
+                        "contrato": "Contrato SVA - CMB/900 - Naturgy Energía (1)",
+                        "campana": "NATURGY_GP_AO_SEA_G_GEN-LUZ_CQS - GEN-LUZ2",
+                        "gclid": 1,
+                        "logs": 1,
+                        "ratio": 100.0
+            },
+            {
+                        "contrato": "Contrato SVA - CMB/900 - Naturgy Energía (1)",
+                        "campana": "NATURGY_GP_AO_SEA_G_MARCA-PRECIO - TARIFAS",
+                        "gclid": 0,
+                        "logs": 0,
+                        "ratio": 0.0
+            },
+            {
+                        "contrato": "Contrato SVA - CMB/900 - Naturgy Energía (1)",
+                        "campana": "NATURGY_GP_AO_SEA_G_MARCA-ENERGIA - MARCA-LUZ-GAS2",
+                        "gclid": 0,
+                        "logs": 0,
+                        "ratio": 0.0
+            },
+            {
+                        "contrato": "Contrato SVA - CMB/900 - Naturgy Energía (1)",
+                        "campana": "NATURGY_GP_AO_SEA_G_GEN-LUZ_CQS - TARIFA-SOLAR2",
+                        "gclid": 0,
+                        "logs": 0,
+                        "ratio": 0.0
+            },
+            {
+                        "contrato": "Contrato SVA - CMB/900 - Naturgy Energía (1)",
+                        "campana": "NATURGY_GP_AO_SEA_G_MARCA-PRECIO - PRECIO",
+                        "gclid": 0,
+                        "logs": 0,
+                        "ratio": 0.0
+            },
+            {
+                        "contrato": "Contrato SVA - CMB/900 - Naturgy Energía (1)",
+                        "campana": "NATURGY_GP_AO_SEA_G_GEN-LUZ_CQS - GEN-LUZ-GAS2",
+                        "gclid": 1,
+                        "logs": 1,
+                        "ratio": 100.0
+            },
+            {
+                        "contrato": "Contrato SVA - CMB/900 - Naturgy Energía (1)",
+                        "campana": "NATURGY_GP_AO_SEA_G_MARCA-GAS_CQS - GAS",
+                        "gclid": 0,
+                        "logs": 0,
+                        "ratio": 0.0
+            },
+            {
+                        "contrato": "Contrato SVA - CMB/900 - Naturgy Energía (1)",
+                        "campana": "NATURGY_GP_AO_GOO_SEA_MG_PYMES_MARCA",
+                        "gclid": 0,
+                        "logs": 0,
+                        "ratio": 0.0
+            },
+            {
+                        "contrato": "Contrato SVA - CMB/900 - Naturgy Energía (1)",
+                        "campana": "NATURGY_GP_AO_GOO_SEA_MG_PYMES_MARCA-TARIFA",
+                        "gclid": 0,
+                        "logs": 0,
+                        "ratio": 0.0
+            },
+            {
+                        "contrato": "Contrato SVA - CMB/900 - Naturgy Energía (1)",
+                        "campana": "NATURGY_GP_AO_GOO_SEA_MG_PYMES_GEN-TARIFA-GRANDES-EMPRESAS",
+                        "gclid": 0,
+                        "logs": 0,
+                        "ratio": 0.0
+            },
+            {
+                        "contrato": "Contrato SVA - CMB/900 - Naturgy Energía (1)",
+                        "campana": "NATURGY_GP_AO_GOO_SEA_MG_PYMES_GEN",
+                        "gclid": 0,
+                        "logs": 0,
+                        "ratio": 0.0
+            },
+            {
+                        "contrato": "Contrato SVA - CMB/900 - Naturgy Energía (1)",
+                        "campana": "NATURGY_GP_AO_GOO_SEA_MG_PYMES_GEN-EMPRESAS",
+                        "gclid": 0,
+                        "logs": 0,
+                        "ratio": 0.0
+            },
+            {
+                        "contrato": "Contrato SVA - CMB/900 - Naturgy Energía (1)",
+                        "campana": "NATURGY_GP_AO_SEA_G_MARCA-ENERGIA - TEST-LANDING",
+                        "gclid": 0,
+                        "logs": 0,
+                        "ratio": 0.0
+            },
+            {
+                        "contrato": "Contrato SVA - CMB/900 - Naturgy Energía (1)",
+                        "campana": "Lead -  CMB Energía",
+                        "gclid": 0,
+                        "logs": 0,
+                        "ratio": 0.0
+            },
+            {
+                        "contrato": "Contrato SVA - CMB/900 - Naturgy Energía (1)",
+                        "campana": "Lead -  Llamada 900 Energía",
+                        "gclid": 0,
+                        "logs": 0,
+                        "ratio": 0.0
+            },
+            {
+                        "contrato": "Contrato Nuevo SVA - CMB/900 - Naturgy Energía (1)",
+                        "campana": "202309_EnergiaQ4_SEA_PMAX-V2",
+                        "gclid": 15,
+                        "logs": 15,
+                        "ratio": 100.0
+            },
+            {
+                        "contrato": "Contrato Nuevo SVA - CMB/900 - Naturgy Energía (1)",
+                        "campana": "NATURGY_GP_AO_GOO_SEA_MG_MARCA-TELEFONO_DFD",
+                        "gclid": 93,
+                        "logs": 90,
+                        "ratio": 96.8
+            },
+            {
+                        "contrato": "Contrato Nuevo SVA - CMB/900 - Naturgy Energía (1)",
+                        "campana": "NATURGY_GP_AO_SEA_G_GEN-GAS_CQS - GEN-GAS-GASNATURAL",
+                        "gclid": 0,
+                        "logs": 0,
+                        "ratio": 0.0
+            },
+            {
+                        "contrato": "Contrato Nuevo SVA - CMB/900 - Naturgy Energía (1)",
+                        "campana": "NATURGY_GP_AO_SEA_G_GEN-GAS_CQS - GEN-GAS-GEN-GAS",
+                        "gclid": 0,
+                        "logs": 0,
+                        "ratio": 0.0
+            },
+            {
+                        "contrato": "Contrato Nuevo SVA - CMB/900 - Naturgy Energía (1)",
+                        "campana": "NATURGY_GP_AO_SEA_G_MARCA-CLIENTES",
+                        "gclid": 87,
+                        "logs": 83,
+                        "ratio": 95.4
+            },
+            {
+                        "contrato": "Contrato Nuevo SVA - CMB/900 - Naturgy Energía (1)",
+                        "campana": "NATURGY_GP_AO_GOO_SEA_MG_PYMES_MARCA-TARIFA-GRANDES-EMPRESAS",
+                        "gclid": 0,
+                        "logs": 0,
+                        "ratio": 0.0
+            },
+            {
+                        "contrato": "Contrato Nuevo SVA - CMB/900 - Naturgy Energía (1)",
+                        "campana": "NATURGY_GP_AO_SEA_G_MARCA-ENERGIA2 - MARCA-GAS",
+                        "gclid": 0,
+                        "logs": 0,
+                        "ratio": 0.0
+            },
+            {
+                        "contrato": "Contrato Nuevo SVA - CMB/900 - Naturgy Energía (1)",
+                        "campana": "NATURGY_GP_AO_SEA_G_MARCA-ENERGIA2 - MARCA-GEN",
                         "gclid": 17,
                         "logs": 17,
                         "ratio": 100.0
             },
             {
-                        "contrato": "Contrato Nuevo Gas - CMB/900 - Naturgy Energía (1)",
-                        "campana": "NATURGY_GP_AO_SEA_G_GEN-GAS_CQS - GEN-GAS-GASNATURAL",
-                        "gclid": 0,
-                        "logs": 0,
-                        "ratio": 0.0
-            },
-            {
-                        "contrato": "Contrato Nuevo Gas - CMB/900 - Naturgy Energía (1)",
-                        "campana": "NATURGY_GP_AO_SEA_G_GEN-GAS_CQS - GEN-GAS-GEN-GAS",
-                        "gclid": 0,
-                        "logs": 0,
-                        "ratio": 0.0
-            },
-            {
-                        "contrato": "Contrato Nuevo Gas - CMB/900 - Naturgy Energía (1)",
-                        "campana": "NATURGY_GP_AO_SEA_G_MARCA-CLIENTES",
-                        "gclid": 16,
-                        "logs": 16,
-                        "ratio": 100.0
-            },
-            {
-                        "contrato": "Contrato Nuevo Gas - CMB/900 - Naturgy Energía (1)",
-                        "campana": "NATURGY_GP_AO_GOO_SEA_MG_PYMES_MARCA-TARIFA-GRANDES-EMPRESAS",
-                        "gclid": 0,
-                        "logs": 0,
-                        "ratio": 0.0
-            },
-            {
-                        "contrato": "Contrato Nuevo Gas - CMB/900 - Naturgy Energía (1)",
-                        "campana": "NATURGY_GP_AO_SEA_G_MARCA-ENERGIA2 - MARCA-GAS",
-                        "gclid": 0,
-                        "logs": 0,
-                        "ratio": 0.0
-            },
-            {
-                        "contrato": "Contrato Nuevo Gas - CMB/900 - Naturgy Energía (1)",
-                        "campana": "NATURGY_GP_AO_SEA_G_MARCA-ENERGIA2 - MARCA-GEN",
-                        "gclid": 10,
-                        "logs": 10,
-                        "ratio": 100.0
-            },
-            {
-                        "contrato": "Contrato Nuevo Gas - CMB/900 - Naturgy Energía (1)",
-                        "campana": "NATURGY_GP_AO_SEA_G_MARCA-ENERGIA2 - MARCA-LUZ",
-                        "gclid": 1,
-                        "logs": 1,
-                        "ratio": 100.0
-            },
-            {
-                        "contrato": "Contrato Nuevo Gas - CMB/900 - Naturgy Energía (1)",
-                        "campana": "NATURGY_GP_AO_SEA_G_MARCA-EXACTA - Desktop",
-                        "gclid": 1,
-                        "logs": 1,
-                        "ratio": 100.0
-            },
-            {
-                        "contrato": "Contrato Nuevo Gas - CMB/900 - Naturgy Energía (1)",
-                        "campana": "NATURGY_GP_AO_SEA_G_MARCA-EXACTA - Mobile",
-                        "gclid": 25,
-                        "logs": 26,
-                        "ratio": 104.0
-            },
-            {
-                        "contrato": "Contrato Nuevo Gas - CMB/900 - Naturgy Energía (1)",
-                        "campana": "NATURGY_GP_AO_SEA_G_MARCA-TARIFA-SOLAR",
-                        "gclid": 0,
-                        "logs": 0,
-                        "ratio": 0.0
-            },
-            {
-                        "contrato": "Contrato Nuevo Gas - CMB/900 - Naturgy Energía (1)",
-                        "campana": "NATURGY_GP_AO_SEA_G_GEN-LUZ_CQS - GEN-LUZ2",
-                        "gclid": 0,
-                        "logs": 0,
-                        "ratio": 0.0
-            },
-            {
-                        "contrato": "Contrato Nuevo Gas - CMB/900 - Naturgy Energía (1)",
-                        "campana": "NATURGY_GP_AO_SEA_G_MARCA-PRECIO - TARIFAS",
-                        "gclid": 0,
-                        "logs": 0,
-                        "ratio": 0.0
-            },
-            {
-                        "contrato": "Contrato Nuevo Gas - CMB/900 - Naturgy Energía (1)",
-                        "campana": "NATURGY_GP_AO_SEA_G_MARCA-ENERGIA - MARCA-LUZ-GAS2",
-                        "gclid": 2,
-                        "logs": 2,
-                        "ratio": 100.0
-            },
-            {
-                        "contrato": "Contrato Nuevo Gas - CMB/900 - Naturgy Energía (1)",
-                        "campana": "NATURGY_GP_AO_SEA_G_GEN-LUZ_CQS - TARIFA-SOLAR2",
-                        "gclid": 0,
-                        "logs": 0,
-                        "ratio": 0.0
-            },
-            {
-                        "contrato": "Contrato Nuevo Gas - CMB/900 - Naturgy Energía (1)",
-                        "campana": "NATURGY_GP_AO_SEA_G_MARCA-PRECIO - PRECIO",
-                        "gclid": 0,
-                        "logs": 0,
-                        "ratio": 0.0
-            },
-            {
-                        "contrato": "Contrato Nuevo Gas - CMB/900 - Naturgy Energía (1)",
-                        "campana": "NATURGY_GP_AO_SEA_G_GEN-LUZ_CQS - GEN-LUZ-GAS2",
-                        "gclid": 3,
-                        "logs": 3,
-                        "ratio": 100.0
-            },
-            {
-                        "contrato": "Contrato Nuevo Gas - CMB/900 - Naturgy Energía (1)",
-                        "campana": "NATURGY_GP_AO_SEA_G_MARCA-GAS_CQS - GAS",
-                        "gclid": 0,
-                        "logs": 0,
-                        "ratio": 0.0
-            },
-            {
-                        "contrato": "Contrato Nuevo Gas - CMB/900 - Naturgy Energía (1)",
-                        "campana": "NATURGY_GP_AO_GOO_SEA_MG_PYMES_MARCA",
-                        "gclid": 0,
-                        "logs": 0,
-                        "ratio": 0.0
-            },
-            {
-                        "contrato": "Contrato Nuevo Gas - CMB/900 - Naturgy Energía (1)",
-                        "campana": "NATURGY_GP_AO_GOO_SEA_MG_PYMES_MARCA-TARIFA",
-                        "gclid": 0,
-                        "logs": 0,
-                        "ratio": 0.0
-            },
-            {
-                        "contrato": "Contrato Nuevo Gas - CMB/900 - Naturgy Energía (1)",
-                        "campana": "NATURGY_GP_AO_GOO_SEA_MG_PYMES_GEN-TARIFA-GRANDES-EMPRESAS",
-                        "gclid": 0,
-                        "logs": 0,
-                        "ratio": 0.0
-            },
-            {
-                        "contrato": "Contrato Nuevo Gas - CMB/900 - Naturgy Energía (1)",
-                        "campana": "NATURGY_GP_AO_GOO_SEA_MG_PYMES_GEN",
-                        "gclid": 1,
-                        "logs": 1,
-                        "ratio": 100.0
-            },
-            {
-                        "contrato": "Contrato Nuevo Gas - CMB/900 - Naturgy Energía (1)",
-                        "campana": "NATURGY_GP_AO_GOO_SEA_MG_PYMES_GEN-EMPRESAS",
-                        "gclid": 1,
-                        "logs": 1,
-                        "ratio": 100.0
-            },
-            {
-                        "contrato": "Contrato SVA - CMB/900 - Naturgy Energía (1)",
-                        "campana": "202309_EnergiaQ4_SEA_PMAX-V2",
-                        "gclid": 0,
-                        "logs": 0,
-                        "ratio": 0.0
-            },
-            {
-                        "contrato": "Contrato SVA - CMB/900 - Naturgy Energía (1)",
-                        "campana": "NATURGY_GP_AO_GOO_SEA_MG_MARCA-TELEFONO_DFD",
-                        "gclid": 0,
-                        "logs": 0,
-                        "ratio": 0.0
-            },
-            {
-                        "contrato": "Contrato SVA - CMB/900 - Naturgy Energía (1)",
-                        "campana": "NATURGY_GP_AO_SEA_G_GEN-GAS_CQS - GEN-GAS-GASNATURAL",
-                        "gclid": 0,
-                        "logs": 0,
-                        "ratio": 0.0
-            },
-            {
-                        "contrato": "Contrato SVA - CMB/900 - Naturgy Energía (1)",
-                        "campana": "NATURGY_GP_AO_SEA_G_GEN-GAS_CQS - GEN-GAS-GEN-GAS",
-                        "gclid": 0,
-                        "logs": 0,
-                        "ratio": 0.0
-            },
-            {
-                        "contrato": "Contrato SVA - CMB/900 - Naturgy Energía (1)",
-                        "campana": "NATURGY_GP_AO_SEA_G_MARCA-CLIENTES",
-                        "gclid": 1,
-                        "logs": 1,
-                        "ratio": 100.0
-            },
-            {
-                        "contrato": "Contrato SVA - CMB/900 - Naturgy Energía (1)",
-                        "campana": "NATURGY_GP_AO_GOO_SEA_MG_PYMES_MARCA-TARIFA-GRANDES-EMPRESAS",
-                        "gclid": 0,
-                        "logs": 0,
-                        "ratio": 0.0
-            },
-            {
-                        "contrato": "Contrato SVA - CMB/900 - Naturgy Energía (1)",
-                        "campana": "NATURGY_GP_AO_SEA_G_MARCA-ENERGIA2 - MARCA-GAS",
-                        "gclid": 0,
-                        "logs": 0,
-                        "ratio": 0.0
-            },
-            {
-                        "contrato": "Contrato SVA - CMB/900 - Naturgy Energía (1)",
-                        "campana": "NATURGY_GP_AO_SEA_G_MARCA-ENERGIA2 - MARCA-GEN",
-                        "gclid": 0,
-                        "logs": 0,
-                        "ratio": 0.0
-            },
-            {
-                        "contrato": "Contrato SVA - CMB/900 - Naturgy Energía (1)",
-                        "campana": "NATURGY_GP_AO_SEA_G_MARCA-ENERGIA2 - MARCA-LUZ",
-                        "gclid": 1,
-                        "logs": 1,
-                        "ratio": 100.0
-            },
-            {
-                        "contrato": "Contrato SVA - CMB/900 - Naturgy Energía (1)",
-                        "campana": "NATURGY_GP_AO_SEA_G_MARCA-EXACTA - Desktop",
-                        "gclid": 0,
-                        "logs": 0,
-                        "ratio": 0.0
-            },
-            {
-                        "contrato": "Contrato SVA - CMB/900 - Naturgy Energía (1)",
-                        "campana": "NATURGY_GP_AO_SEA_G_MARCA-EXACTA - Mobile",
-                        "gclid": 0,
-                        "logs": 0,
-                        "ratio": 0.0
-            },
-            {
-                        "contrato": "Contrato SVA - CMB/900 - Naturgy Energía (1)",
-                        "campana": "NATURGY_GP_AO_SEA_G_MARCA-TARIFA-SOLAR",
-                        "gclid": 0,
-                        "logs": 0,
-                        "ratio": 0.0
-            },
-            {
-                        "contrato": "Contrato SVA - CMB/900 - Naturgy Energía (1)",
-                        "campana": "NATURGY_GP_AO_SEA_G_GEN-LUZ_CQS - GEN-LUZ2",
-                        "gclid": 0,
-                        "logs": 0,
-                        "ratio": 0.0
-            },
-            {
-                        "contrato": "Contrato SVA - CMB/900 - Naturgy Energía (1)",
-                        "campana": "NATURGY_GP_AO_SEA_G_MARCA-PRECIO - TARIFAS",
-                        "gclid": 0,
-                        "logs": 0,
-                        "ratio": 0.0
-            },
-            {
-                        "contrato": "Contrato SVA - CMB/900 - Naturgy Energía (1)",
-                        "campana": "NATURGY_GP_AO_SEA_G_MARCA-ENERGIA - MARCA-LUZ-GAS2",
-                        "gclid": 0,
-                        "logs": 0,
-                        "ratio": 0.0
-            },
-            {
-                        "contrato": "Contrato SVA - CMB/900 - Naturgy Energía (1)",
-                        "campana": "NATURGY_GP_AO_SEA_G_GEN-LUZ_CQS - TARIFA-SOLAR2",
-                        "gclid": 0,
-                        "logs": 0,
-                        "ratio": 0.0
-            },
-            {
-                        "contrato": "Contrato SVA - CMB/900 - Naturgy Energía (1)",
-                        "campana": "NATURGY_GP_AO_SEA_G_MARCA-PRECIO - PRECIO",
-                        "gclid": 0,
-                        "logs": 0,
-                        "ratio": 0.0
-            },
-            {
-                        "contrato": "Contrato SVA - CMB/900 - Naturgy Energía (1)",
-                        "campana": "NATURGY_GP_AO_SEA_G_GEN-LUZ_CQS - GEN-LUZ-GAS2",
-                        "gclid": 1,
-                        "logs": 1,
-                        "ratio": 100.0
-            },
-            {
-                        "contrato": "Contrato SVA - CMB/900 - Naturgy Energía (1)",
-                        "campana": "NATURGY_GP_AO_SEA_G_MARCA-GAS_CQS - GAS",
-                        "gclid": 0,
-                        "logs": 0,
-                        "ratio": 0.0
-            },
-            {
-                        "contrato": "Contrato SVA - CMB/900 - Naturgy Energía (1)",
-                        "campana": "NATURGY_GP_AO_GOO_SEA_MG_PYMES_MARCA",
-                        "gclid": 0,
-                        "logs": 0,
-                        "ratio": 0.0
-            },
-            {
-                        "contrato": "Contrato SVA - CMB/900 - Naturgy Energía (1)",
-                        "campana": "NATURGY_GP_AO_GOO_SEA_MG_PYMES_MARCA-TARIFA",
-                        "gclid": 0,
-                        "logs": 0,
-                        "ratio": 0.0
-            },
-            {
-                        "contrato": "Contrato SVA - CMB/900 - Naturgy Energía (1)",
-                        "campana": "NATURGY_GP_AO_GOO_SEA_MG_PYMES_GEN-TARIFA-GRANDES-EMPRESAS",
-                        "gclid": 0,
-                        "logs": 0,
-                        "ratio": 0.0
-            },
-            {
-                        "contrato": "Contrato SVA - CMB/900 - Naturgy Energía (1)",
-                        "campana": "NATURGY_GP_AO_GOO_SEA_MG_PYMES_GEN",
-                        "gclid": 0,
-                        "logs": 0,
-                        "ratio": 0.0
-            },
-            {
-                        "contrato": "Contrato SVA - CMB/900 - Naturgy Energía (1)",
-                        "campana": "NATURGY_GP_AO_GOO_SEA_MG_PYMES_GEN-EMPRESAS",
-                        "gclid": 0,
-                        "logs": 0,
-                        "ratio": 0.0
-            },
-            {
-                        "contrato": "Contrato Nuevo SVA - CMB/900 - Naturgy Energía (1)",
-                        "campana": "202309_EnergiaQ4_SEA_PMAX-V2",
-                        "gclid": 11,
-                        "logs": 11,
-                        "ratio": 100.0
-            },
-            {
-                        "contrato": "Contrato Nuevo SVA - CMB/900 - Naturgy Energía (1)",
-                        "campana": "NATURGY_GP_AO_GOO_SEA_MG_MARCA-TELEFONO_DFD",
-                        "gclid": 64,
-                        "logs": 61,
-                        "ratio": 95.3
-            },
-            {
-                        "contrato": "Contrato Nuevo SVA - CMB/900 - Naturgy Energía (1)",
-                        "campana": "NATURGY_GP_AO_SEA_G_GEN-GAS_CQS - GEN-GAS-GASNATURAL",
-                        "gclid": 0,
-                        "logs": 0,
-                        "ratio": 0.0
-            },
-            {
-                        "contrato": "Contrato Nuevo SVA - CMB/900 - Naturgy Energía (1)",
-                        "campana": "NATURGY_GP_AO_SEA_G_GEN-GAS_CQS - GEN-GAS-GEN-GAS",
-                        "gclid": 0,
-                        "logs": 0,
-                        "ratio": 0.0
-            },
-            {
-                        "contrato": "Contrato Nuevo SVA - CMB/900 - Naturgy Energía (1)",
-                        "campana": "NATURGY_GP_AO_SEA_G_MARCA-CLIENTES",
-                        "gclid": 60,
-                        "logs": 58,
-                        "ratio": 96.7
-            },
-            {
-                        "contrato": "Contrato Nuevo SVA - CMB/900 - Naturgy Energía (1)",
-                        "campana": "NATURGY_GP_AO_GOO_SEA_MG_PYMES_MARCA-TARIFA-GRANDES-EMPRESAS",
-                        "gclid": 0,
-                        "logs": 0,
-                        "ratio": 0.0
-            },
-            {
-                        "contrato": "Contrato Nuevo SVA - CMB/900 - Naturgy Energía (1)",
-                        "campana": "NATURGY_GP_AO_SEA_G_MARCA-ENERGIA2 - MARCA-GAS",
-                        "gclid": 0,
-                        "logs": 0,
-                        "ratio": 0.0
-            },
-            {
-                        "contrato": "Contrato Nuevo SVA - CMB/900 - Naturgy Energía (1)",
-                        "campana": "NATURGY_GP_AO_SEA_G_MARCA-ENERGIA2 - MARCA-GEN",
-                        "gclid": 11,
-                        "logs": 11,
-                        "ratio": 100.0
-            },
-            {
                         "contrato": "Contrato Nuevo SVA - CMB/900 - Naturgy Energía (1)",
                         "campana": "NATURGY_GP_AO_SEA_G_MARCA-ENERGIA2 - MARCA-LUZ",
-                        "gclid": 6,
-                        "logs": 6,
-                        "ratio": 100.0
-            },
-            {
-                        "contrato": "Contrato Nuevo SVA - CMB/900 - Naturgy Energía (1)",
-                        "campana": "NATURGY_GP_AO_SEA_G_MARCA-EXACTA - Desktop",
                         "gclid": 8,
-                        "logs": 7,
-                        "ratio": 87.5
+                        "logs": 9,
+                        "ratio": 112.5
+            },
+            {
+                        "contrato": "Contrato Nuevo SVA - CMB/900 - Naturgy Energía (1)",
+                        "campana": "NATURGY_GP_AO_SEA_G_MARCA-EXACTA - Desktop",
+                        "gclid": 9,
+                        "logs": 8,
+                        "ratio": 88.9
             },
             {
                         "contrato": "Contrato Nuevo SVA - CMB/900 - Naturgy Energía (1)",
                         "campana": "NATURGY_GP_AO_SEA_G_MARCA-EXACTA - Mobile",
-                        "gclid": 44,
-                        "logs": 41,
-                        "ratio": 93.2
+                        "gclid": 59,
+                        "logs": 56,
+                        "ratio": 94.9
             },
             {
                         "contrato": "Contrato Nuevo SVA - CMB/900 - Naturgy Energía (1)",
@@ -1238,9 +1531,9 @@
             {
                         "contrato": "Contrato Nuevo SVA - CMB/900 - Naturgy Energía (1)",
                         "campana": "NATURGY_GP_AO_SEA_G_GEN-LUZ_CQS - GEN-LUZ2",
-                        "gclid": 5,
-                        "logs": 6,
-                        "ratio": 120.0
+                        "gclid": 10,
+                        "logs": 11,
+                        "ratio": 110.0
             },
             {
                         "contrato": "Contrato Nuevo SVA - CMB/900 - Naturgy Energía (1)",
@@ -1266,8 +1559,8 @@
             {
                         "contrato": "Contrato Nuevo SVA - CMB/900 - Naturgy Energía (1)",
                         "campana": "NATURGY_GP_AO_SEA_G_MARCA-PRECIO - PRECIO",
-                        "gclid": 2,
-                        "logs": 2,
+                        "gclid": 3,
+                        "logs": 3,
                         "ratio": 100.0
             },
             {
@@ -1320,18 +1613,39 @@
                         "ratio": 100.0
             },
             {
+                        "contrato": "Contrato Nuevo SVA - CMB/900 - Naturgy Energía (1)",
+                        "campana": "NATURGY_GP_AO_SEA_G_MARCA-ENERGIA - TEST-LANDING",
+                        "gclid": 0,
+                        "logs": 0,
+                        "ratio": 0.0
+            },
+            {
+                        "contrato": "Contrato Nuevo SVA - CMB/900 - Naturgy Energía (1)",
+                        "campana": "Lead -  CMB Energía",
+                        "gclid": 0,
+                        "logs": 0,
+                        "ratio": 0.0
+            },
+            {
+                        "contrato": "Contrato Nuevo SVA - CMB/900 - Naturgy Energía (1)",
+                        "campana": "Lead -  Llamada 900 Energía",
+                        "gclid": 0,
+                        "logs": 0,
+                        "ratio": 0.0
+            },
+            {
                         "contrato": "Contrato Nuevo Luz - CMB/900 -  PYMES Naturgy Energía",
                         "campana": "202309_EnergiaQ4_SEA_PMAX-V2",
-                        "gclid": 1,
-                        "logs": 1,
+                        "gclid": 2,
+                        "logs": 2,
                         "ratio": 100.0
             },
             {
                         "contrato": "Contrato Nuevo Luz - CMB/900 -  PYMES Naturgy Energía",
                         "campana": "NATURGY_GP_AO_GOO_SEA_MG_MARCA-TELEFONO_DFD",
-                        "gclid": 8,
-                        "logs": 6,
-                        "ratio": 75.0
+                        "gclid": 9,
+                        "logs": 7,
+                        "ratio": 77.8
             },
             {
                         "contrato": "Contrato Nuevo Luz - CMB/900 -  PYMES Naturgy Energía",
@@ -1350,8 +1664,8 @@
             {
                         "contrato": "Contrato Nuevo Luz - CMB/900 -  PYMES Naturgy Energía",
                         "campana": "NATURGY_GP_AO_SEA_G_MARCA-CLIENTES",
-                        "gclid": 2,
-                        "logs": 2,
+                        "gclid": 4,
+                        "logs": 4,
                         "ratio": 100.0
             },
             {
@@ -1488,6 +1802,27 @@
                         "ratio": 0.0
             },
             {
+                        "contrato": "Contrato Nuevo Luz - CMB/900 -  PYMES Naturgy Energía",
+                        "campana": "NATURGY_GP_AO_SEA_G_MARCA-ENERGIA - TEST-LANDING",
+                        "gclid": 0,
+                        "logs": 0,
+                        "ratio": 0.0
+            },
+            {
+                        "contrato": "Contrato Nuevo Luz - CMB/900 -  PYMES Naturgy Energía",
+                        "campana": "Lead -  CMB Energía",
+                        "gclid": 0,
+                        "logs": 0,
+                        "ratio": 0.0
+            },
+            {
+                        "contrato": "Contrato Nuevo Luz - CMB/900 -  PYMES Naturgy Energía",
+                        "campana": "Lead -  Llamada 900 Energía",
+                        "gclid": 0,
+                        "logs": 0,
+                        "ratio": 0.0
+            },
+            {
                         "contrato": "Contrato Nuevo Gas - CMB/900 -  PYMES Naturgy Energía",
                         "campana": "202309_EnergiaQ4_SEA_PMAX-V2",
                         "gclid": 0,
@@ -1560,9 +1895,9 @@
             {
                         "contrato": "Contrato Nuevo Gas - CMB/900 -  PYMES Naturgy Energía",
                         "campana": "NATURGY_GP_AO_SEA_G_MARCA-EXACTA - Mobile",
-                        "gclid": 0,
-                        "logs": 0,
-                        "ratio": 0.0
+                        "gclid": 1,
+                        "logs": 1,
+                        "ratio": 100.0
             },
             {
                         "contrato": "Contrato Nuevo Gas - CMB/900 -  PYMES Naturgy Energía",
@@ -1656,18 +1991,39 @@
                         "ratio": 0.0
             },
             {
+                        "contrato": "Contrato Nuevo Gas - CMB/900 -  PYMES Naturgy Energía",
+                        "campana": "NATURGY_GP_AO_SEA_G_MARCA-ENERGIA - TEST-LANDING",
+                        "gclid": 0,
+                        "logs": 0,
+                        "ratio": 0.0
+            },
+            {
+                        "contrato": "Contrato Nuevo Gas - CMB/900 -  PYMES Naturgy Energía",
+                        "campana": "Lead -  CMB Energía",
+                        "gclid": 0,
+                        "logs": 0,
+                        "ratio": 0.0
+            },
+            {
+                        "contrato": "Contrato Nuevo Gas - CMB/900 -  PYMES Naturgy Energía",
+                        "campana": "Lead -  Llamada 900 Energía",
+                        "gclid": 0,
+                        "logs": 0,
+                        "ratio": 0.0
+            },
+            {
                         "contrato": "Contratación Offline CMB/900 ",
                         "campana": "202309_EnergiaQ4_SEA_PMAX-V2",
-                        "gclid": 31,
-                        "logs": 31,
+                        "gclid": 47,
+                        "logs": 47,
                         "ratio": 100.0
             },
             {
                         "contrato": "Contratación Offline CMB/900 ",
                         "campana": "NATURGY_GP_AO_GOO_SEA_MG_MARCA-TELEFONO_DFD",
-                        "gclid": 183,
-                        "logs": 170,
-                        "ratio": 92.9
+                        "gclid": 251,
+                        "logs": 236,
+                        "ratio": 94.0
             },
             {
                         "contrato": "Contratación Offline CMB/900 ",
@@ -1686,9 +2042,9 @@
             {
                         "contrato": "Contratación Offline CMB/900 ",
                         "campana": "NATURGY_GP_AO_SEA_G_MARCA-CLIENTES",
-                        "gclid": 111,
-                        "logs": 106,
-                        "ratio": 95.5
+                        "gclid": 163,
+                        "logs": 156,
+                        "ratio": 95.7
             },
             {
                         "contrato": "Contratación Offline CMB/900 ",
@@ -1707,30 +2063,30 @@
             {
                         "contrato": "Contratación Offline CMB/900 ",
                         "campana": "NATURGY_GP_AO_SEA_G_MARCA-ENERGIA2 - MARCA-GEN",
-                        "gclid": 45,
-                        "logs": 40,
-                        "ratio": 88.9
+                        "gclid": 58,
+                        "logs": 54,
+                        "ratio": 93.1
             },
             {
                         "contrato": "Contratación Offline CMB/900 ",
                         "campana": "NATURGY_GP_AO_SEA_G_MARCA-ENERGIA2 - MARCA-LUZ",
-                        "gclid": 23,
-                        "logs": 21,
-                        "ratio": 91.3
+                        "gclid": 31,
+                        "logs": 30,
+                        "ratio": 96.8
             },
             {
                         "contrato": "Contratación Offline CMB/900 ",
                         "campana": "NATURGY_GP_AO_SEA_G_MARCA-EXACTA - Desktop",
-                        "gclid": 18,
-                        "logs": 18,
+                        "gclid": 29,
+                        "logs": 29,
                         "ratio": 100.0
             },
             {
                         "contrato": "Contratación Offline CMB/900 ",
                         "campana": "NATURGY_GP_AO_SEA_G_MARCA-EXACTA - Mobile",
-                        "gclid": 121,
-                        "logs": 112,
-                        "ratio": 92.6
+                        "gclid": 169,
+                        "logs": 157,
+                        "ratio": 92.9
             },
             {
                         "contrato": "Contratación Offline CMB/900 ",
@@ -1742,15 +2098,15 @@
             {
                         "contrato": "Contratación Offline CMB/900 ",
                         "campana": "NATURGY_GP_AO_SEA_G_GEN-LUZ_CQS - GEN-LUZ2",
-                        "gclid": 17,
-                        "logs": 18,
-                        "ratio": 105.9
+                        "gclid": 29,
+                        "logs": 29,
+                        "ratio": 100.0
             },
             {
                         "contrato": "Contratación Offline CMB/900 ",
                         "campana": "NATURGY_GP_AO_SEA_G_MARCA-PRECIO - TARIFAS",
-                        "gclid": 10,
-                        "logs": 10,
+                        "gclid": 12,
+                        "logs": 12,
                         "ratio": 100.0
             },
             {
@@ -1770,15 +2126,15 @@
             {
                         "contrato": "Contratación Offline CMB/900 ",
                         "campana": "NATURGY_GP_AO_SEA_G_MARCA-PRECIO - PRECIO",
-                        "gclid": 17,
-                        "logs": 15,
-                        "ratio": 88.2
+                        "gclid": 18,
+                        "logs": 16,
+                        "ratio": 88.9
             },
             {
                         "contrato": "Contratación Offline CMB/900 ",
                         "campana": "NATURGY_GP_AO_SEA_G_GEN-LUZ_CQS - GEN-LUZ-GAS2",
-                        "gclid": 4,
-                        "logs": 4,
+                        "gclid": 8,
+                        "logs": 8,
                         "ratio": 100.0
             },
             {
@@ -1822,6 +2178,27 @@
                         "gclid": 1,
                         "logs": 1,
                         "ratio": 100.0
+            },
+            {
+                        "contrato": "Contratación Offline CMB/901",
+                        "campana": "NATURGY_GP_AO_SEA_G_MARCA-ENERGIA - TEST-LANDING",
+                        "gclid": 0,
+                        "logs": 0,
+                        "ratio": 0.0
+            },
+            {
+                        "contrato": "Contratación Offline CMB/902",
+                        "campana": "Lead -  CMB Energía",
+                        "gclid": 0,
+                        "logs": 0,
+                        "ratio": 0.0
+            },
+            {
+                        "contrato": "Contratación Offline CMB/903",
+                        "campana": "Lead -  Llamada 900 Energía",
+                        "gclid": 0,
+                        "logs": 0,
+                        "ratio": 0.0
             }
 ];
 
@@ -1889,28 +2266,49 @@ function updateCampaignOptions() {
 function switchTab(tab) {
     currentTab = tab;
 
-    document.querySelectorAll('.tab-btn').forEach(button =>
-        button.classList.remove('active')
-    );
+    document.querySelectorAll('.tab-btn').forEach(button => {
+        button.classList.remove('active');
+        button.setAttribute('aria-selected', 'false');
+    });
 
-    const campaignFilter =
-        document.getElementById('campaign-filter-wrapper');
+    const isMonthly = tab === 'evolutivo';
+    const dashboard = document.querySelector('.dashboard-grid');
+    const monthlyView = document.getElementById('monthly-view');
+    const campaignFilter = document.getElementById('campaign-filter-wrapper');
+
+    document.getElementById(
+        tab === 'normal'
+            ? 'btn-tab-normal'
+            : tab === 'campana'
+                ? 'btn-tab-campana'
+                : 'btn-tab-evolutivo'
+    ).classList.add('active');
+
+    document.getElementById(
+        tab === 'normal'
+            ? 'btn-tab-normal'
+            : tab === 'campana'
+                ? 'btn-tab-campana'
+                : 'btn-tab-evolutivo'
+    ).setAttribute('aria-selected', 'true');
+
+    dashboard.style.display = isMonthly ? 'none' : '';
+    monthlyView.style.display = isMonthly ? 'block' : 'none';
 
     if (tab === 'normal') {
-        document.getElementById('btn-tab-normal').classList.add('active');
         document.getElementById('table-title').textContent =
             'Análisis de Cobertura Global (Contratos)';
         campaignFilter.style.display = 'none';
-    } else {
-        document.getElementById('btn-tab-campana').classList.add('active');
+        applyFilters();
+    } else if (tab === 'campana') {
         document.getElementById('table-title').textContent =
             'Análisis de Cobertura Detallado (Campañas)';
         campaignFilter.style.display = 'block';
         updateCampaignOptions();
+        applyFilters();
     }
-
-    applyFilters();
 }
+
 
 function applyFilters() {
     const selectedContract =
@@ -2093,6 +2491,196 @@ function resetFilters() {
     setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
+// Datos mensuales: bloque total Contratación Offline CMB/900.
+// No participan en las barras, filtros ni exportación CSV del análisis principal.
+const monthlyData = [
+    {month:'Ene',link:1209,gclid:170,linkNoCE:633,logs:169,gads:175.34,gclidRate:26.9,gadsRate:103.8},
+    {month:'Feb',link:2212,gclid:368,linkNoCE:1103,logs:357,gads:393.73,gclidRate:33.4,gadsRate:110.3},
+    {month:'Mar',link:2585,gclid:685,linkNoCE:1439,logs:608,gads:634.57,gclidRate:47.6,gadsRate:104.4},
+    {month:'Abr',link:2245,gclid:911,linkNoCE:1668,logs:936,gads:814.83,gclidRate:54.6,gadsRate:87.1},
+    {month:'May',link:1725,gclid:773,linkNoCE:1328,logs:736,gads:754.86,gclidRate:58.2,gadsRate:102.6},
+    {month:'Jun',link:1921,gclid:973,linkNoCE:1556,logs:911,gads:880.98,gclidRate:62.5,gadsRate:96.7},
+    {month:'Jul',link:1878,gclid:753,linkNoCE:1234,logs:723,gads:750.37,gclidRate:61.0,gadsRate:103.8},
+    {month:'Ago',link:2266,gclid:1121,linkNoCE:1957,logs:965,gads:992.28,gclidRate:57.3,gadsRate:102.8},
+    {month:'Sep',link:3043,gclid:1590,linkNoCE:2640,logs:1521,gads:1428.14,gclidRate:60.2,gadsRate:93.9}
+];
+
+const monthlyNumber = value =>
+    new Intl.NumberFormat('es-ES', {maximumFractionDigits:2}).format(value);
+
+const monthlyPercent = value =>
+    new Intl.NumberFormat('es-ES', {
+        minimumFractionDigits:1,
+        maximumFractionDigits:1
+    }).format(value) + '%';
+
+function drawMonthlyLineChart(targetId, series, isPercent=false) {
+    const W=680, H=250, L=58, R=16, T=14, B=34;
+    const plotW=W-L-R, plotH=H-T-B;
+    const values=series.flatMap(item=>item.values);
+    const maxValue=isPercent
+        ? Math.max(125, Math.ceil(Math.max(...values)/25)*25)
+        : Math.ceil(Math.max(...values)/500)*500;
+
+    const ticks=isPercent
+        ? Array.from({length:Math.floor(maxValue/25)+1},(_,i)=>i*25)
+        : [0,.25,.5,.75,1].map(value=>Math.round(maxValue*value));
+
+    const x=index=>L+index*(plotW/(monthlyData.length-1));
+    const y=value=>T+plotH-(value/maxValue)*plotH;
+
+    let svg=`<svg class="monthly-chart" viewBox="0 0 ${W} ${H}" role="img">`;
+
+    ticks.forEach(value=>{
+        svg+=`<line class="monthly-gridline" x1="${L}" y1="${y(value)}" x2="${W-R}" y2="${y(value)}"></line>`;
+        svg+=`<text class="monthly-axis" x="${L-8}" y="${y(value)+3}" text-anchor="end">${isPercent?value+'%':monthlyNumber(value)}</text>`;
+    });
+
+    monthlyData.forEach((item,index)=>{
+        svg+=`<text class="monthly-month" x="${x(index)}" y="${H-10}" text-anchor="middle">${item.month}</text>`;
+    });
+
+    series.forEach(item=>{
+        const points=item.values.map((value,index)=>`${x(index)},${y(value)}`).join(' ');
+        svg+=`<polyline class="monthly-line" points="${points}" stroke="${item.color}"></polyline>`;
+
+        item.values.forEach((value,index)=>{
+            const displayValue=isPercent?monthlyPercent(value):monthlyNumber(value);
+            svg+=`<circle class="monthly-point"
+                tabindex="0"
+                cx="${x(index)}"
+                cy="${y(value)}"
+                r="4.5"
+                fill="${item.color}"
+                data-month="${monthlyData[index].month}"
+                data-series="${item.label}"
+                data-value="${displayValue}"></circle>`;
+        });
+    });
+
+    svg+='</svg>';
+    document.getElementById(targetId).innerHTML=svg;
+}
+
+function drawMonthlyBars(targetId) {
+    const W=680, H=250, L=58, R=16, T=14, B=34;
+    const plotW=W-L-R, plotH=H-T-B;
+    const maxValue=Math.ceil(
+        Math.max(...monthlyData.flatMap(item=>[item.logs,item.gads]))/500
+    )*500;
+    const ticks=[0,.25,.5,.75,1].map(value=>Math.round(maxValue*value));
+    const groupW=plotW/monthlyData.length;
+    const barW=Math.min(16,groupW*.24);
+    const y=value=>T+plotH-(value/maxValue)*plotH;
+
+    let svg=`<svg class="monthly-chart" viewBox="0 0 ${W} ${H}" role="img">`;
+
+    ticks.forEach(value=>{
+        svg+=`<line class="monthly-gridline" x1="${L}" y1="${y(value)}" x2="${W-R}" y2="${y(value)}"></line>`;
+        svg+=`<text class="monthly-axis" x="${L-8}" y="${y(value)+3}" text-anchor="end">${monthlyNumber(value)}</text>`;
+    });
+
+    monthlyData.forEach((item,index)=>{
+        const center=L+groupW*(index+.5);
+        const logsHeight=plotH*item.logs/maxValue;
+        const gadsHeight=plotH*item.gads/maxValue;
+
+        svg+=`<text class="monthly-month" x="${center}" y="${H-10}" text-anchor="middle">${item.month}</text>`;
+
+        svg+=`<rect class="monthly-bar"
+            tabindex="0"
+            x="${center-barW-1}" y="${y(item.logs)}"
+            width="${barW}" height="${logsHeight}" rx="3"
+            fill="#e31b23"
+            data-month="${item.month}" data-series="LOGS"
+            data-value="${monthlyNumber(item.logs)}"></rect>`;
+
+        svg+=`<rect class="monthly-bar"
+            tabindex="0"
+            x="${center+1}" y="${y(item.gads)}"
+            width="${barW}" height="${gadsHeight}" rx="3"
+            fill="#3672bd"
+            data-month="${item.month}" data-series="GAds"
+            data-value="${monthlyNumber(item.gads)}"></rect>`;
+    });
+
+    svg+='</svg>';
+    document.getElementById(targetId).innerHTML=svg;
+}
+
+function showMonthlyTooltip(event, element) {
+    const tooltip=document.getElementById('monthly-tooltip');
+    tooltip.innerHTML=
+        `<strong>${element.dataset.month}</strong>`+
+        `${element.dataset.series}: ${element.dataset.value}`;
+    tooltip.style.display='block';
+    moveMonthlyTooltip(event);
+}
+
+function moveMonthlyTooltip(event) {
+    const tooltip=document.getElementById('monthly-tooltip');
+    if(tooltip.style.display!=='block') return;
+
+    let left=event.clientX+14;
+    let top=event.clientY+14;
+    const bounds=tooltip.getBoundingClientRect();
+
+    if(left+bounds.width>window.innerWidth-8) left=event.clientX-bounds.width-14;
+    if(top+bounds.height>window.innerHeight-8) top=event.clientY-bounds.height-14;
+
+    tooltip.style.left=Math.max(8,left)+'px';
+    tooltip.style.top=Math.max(8,top)+'px';
+}
+
+function hideMonthlyTooltip() {
+    document.getElementById('monthly-tooltip').style.display='none';
+}
+
+function renderMonthlyCharts() {
+    drawMonthlyLineChart('monthly-link-chart',[
+        {label:'LINK total',values:monthlyData.map(item=>item.link),color:'#e31b23'},
+        {label:'LINK con GCLID',values:monthlyData.map(item=>item.gclid),color:'#3672bd'}
+    ]);
+
+    drawMonthlyLineChart('monthly-gclid-chart',[
+        {label:'Cobertura GCLID',values:monthlyData.map(item=>item.gclidRate),color:'#e31b23'}
+    ],true);
+
+    drawMonthlyBars('monthly-logs-chart');
+
+    drawMonthlyLineChart('monthly-gads-chart',[
+        {label:'Cobertura GAds vs LOGS',values:monthlyData.map(item=>item.gadsRate),color:'#e31b23'}
+    ],true);
+}
+
+document.addEventListener('pointerover',event=>{
+    const point=event.target.closest('[data-series]');
+    if(point) showMonthlyTooltip(event,point);
+});
+
+document.addEventListener('pointermove',moveMonthlyTooltip);
+
+document.addEventListener('pointerout',event=>{
+    if(event.target.closest('[data-series]')) hideMonthlyTooltip();
+});
+
+document.addEventListener('focusin',event=>{
+    const point=event.target.closest('[data-series]');
+    if(!point) return;
+
+    const bounds=point.getBoundingClientRect();
+    showMonthlyTooltip(
+        {clientX:bounds.left+bounds.width/2,clientY:bounds.top},
+        point
+    );
+});
+
+document.addEventListener('focusout',event=>{
+    if(event.target.closest('[data-series]')) hideMonthlyTooltip();
+});
+
+renderMonthlyCharts();
+
 
         // Se inyectarán los arrays dataResultados y dataCampanas arriba
         document.getElementById('contract-filter').addEventListener('change', () => {
@@ -2109,151 +2697,5 @@ initFilters();
 applyFilters();
 
     </script>
-
-<!-- EVOLUTIVO_SECTION_START -->
-<section class="evo-section" aria-labelledby="evo-title">
-  <header class="evo-heading">
-    <div class="evo-eyebrow">Evolución · 2026</div>
-    <h2 id="evo-title">Evolutivo Mensual</h2>
-    <p>Enero a septiembre. Este análisis es independiente de las barras, filtros y CSV del dashboard.</p>
-  </header>
-
-  <div class="evo-grid">
-    <article class="evo-card">
-      <h3>Conversiones LINK vs GCLID</h3>
-      <p class="evo-subtitle">Volumen mensual</p>
-      <div id="evo-link"></div>
-      <div class="evo-legend">
-        <span class="evo-legend-item"><i class="evo-dot evo-red"></i>LINK total</span>
-        <span class="evo-legend-item"><i class="evo-dot evo-blue"></i>LINK con GCLID</span>
-      </div>
-    </article>
-
-    <article class="evo-card">
-      <h3>Cobertura GCLID</h3>
-      <p class="evo-subtitle">LINK con GCLID ÷ LINK sin CE</p>
-      <div id="evo-gclid-rate"></div>
-      <div class="evo-legend">
-        <span class="evo-legend-item"><i class="evo-dot evo-red"></i>Cobertura GCLID</span>
-      </div>
-    </article>
-
-    <article class="evo-card">
-      <h3>LOGS vs conversiones de GAds</h3>
-      <p class="evo-subtitle">Volumen mensual</p>
-      <div id="evo-logs-gads"></div>
-      <div class="evo-legend">
-        <span class="evo-legend-item"><i class="evo-dot evo-red"></i>LOGS</span>
-        <span class="evo-legend-item"><i class="evo-dot evo-blue"></i>GAds</span>
-      </div>
-    </article>
-
-    <article class="evo-card">
-      <h3>Cobertura de GAds</h3>
-      <p class="evo-subtitle">GAds ÷ LOGS</p>
-      <div id="evo-gads-rate"></div>
-      <div class="evo-legend">
-        <span class="evo-legend-item"><i class="evo-dot evo-red"></i>Cobertura GAds vs LOGS</span>
-      </div>
-    </article>
-  </div>
-
-  <p class="evo-note">
-    Octubre y noviembre se incorporarán más adelante desde sus ficheros propios.
-    Las gráficas no participan en los filtros ni en la exportación CSV del análisis principal.
-  </p>
-</section>
-
-<script>
-const evoData = [{"mes": "Ene", "link": 1209, "gclid": 170, "logs": 169, "gads": 175.34, "coberturaGclid": 26.9, "coberturaGads": 103.8}, {"mes": "Feb", "link": 2212, "gclid": 368, "logs": 357, "gads": 393.73, "coberturaGclid": 33.4, "coberturaGads": 110.3}, {"mes": "Mar", "link": 2585, "gclid": 685, "logs": 608, "gads": 634.57, "coberturaGclid": 47.6, "coberturaGads": 104.4}, {"mes": "Abr", "link": 2245, "gclid": 911, "logs": 936, "gads": 814.83, "coberturaGclid": 54.6, "coberturaGads": 87.1}, {"mes": "May", "link": 1725, "gclid": 773, "logs": 736, "gads": 754.86, "coberturaGclid": 58.2, "coberturaGads": 102.6}, {"mes": "Jun", "link": 1921, "gclid": 973, "logs": 911, "gads": 880.98, "coberturaGclid": 62.5, "coberturaGads": 96.7}, {"mes": "Jul", "link": 1878, "gclid": 753, "logs": 723, "gads": 750.37, "coberturaGclid": 61.0, "coberturaGads": 103.8}, {"mes": "Ago", "link": 2266, "gclid": 1121, "logs": 965, "gads": 992.28, "coberturaGclid": 57.3, "coberturaGads": 102.8}, {"mes": "Sep", "link": 3043, "gclid": 1590, "logs": 1521, "gads": 1428.14, "coberturaGclid": 60.2, "coberturaGads": 93.9}];
-const evoNumber = n => new Intl.NumberFormat('es-ES',{maximumFractionDigits:0}).format(n);
-const evoDecimal = n => new Intl.NumberFormat('es-ES',{maximumFractionDigits:2}).format(n);
-const evoPercent = n => new Intl.NumberFormat('es-ES',{
-  minimumFractionDigits:1,maximumFractionDigits:1
-}).format(n) + '%';
-
-function evoLineChart(targetId, series, percent=false) {
-  const W=680,H=250,L=58,R=16,T=14,B=34;
-  const plotW=W-L-R,plotH=H-T-B;
-  const values=series.flatMap(s=>s.values).filter(Number.isFinite);
-  let maxValue=percent
-    ? Math.max(125,Math.ceil(Math.max(...values)/25)*25)
-    : Math.ceil(Math.max(...values)/500)*500;
-  if(!maxValue) maxValue=1;
-
-  const ticks=percent
-    ? Array.from({length:Math.floor(maxValue/25)+1},(_,i)=>i*25)
-    : [0,.25,.5,.75,1].map(v=>Math.round(maxValue*v));
-
-  const x=i=>L+i*(plotW/(evoData.length-1));
-  const y=v=>T+plotH-(v/maxValue)*plotH;
-  let svg='<svg class="evo-chart" viewBox="0 0 '+W+' '+H+'" role="img">';
-
-  ticks.forEach(v=>{
-    svg+='<line class="evo-gridline" x1="'+L+'" y1="'+y(v)+'" x2="'+(W-R)+'" y2="'+y(v)+'"></line>';
-    svg+='<text class="evo-axis" x="'+(L-8)+'" y="'+(y(v)+3)+'" text-anchor="end">'+
-      (percent?evoNumber(v)+'%':evoNumber(v))+'</text>';
-  });
-
-  evoData.forEach((d,i)=>{
-    svg+='<text class="evo-month" x="'+x(i)+'" y="'+(H-10)+'" text-anchor="middle">'+d.mes+'</text>';
-  });
-
-  series.forEach(s=>{
-    const points=s.values.map((v,i)=>x(i)+','+y(v)).join(' ');
-    svg+='<polyline class="evo-line" points="'+points+'" stroke="'+s.color+'"></polyline>';
-    s.values.forEach((v,i)=>{
-      const shown=percent?evoPercent(v):evoDecimal(v);
-      svg+='<circle class="evo-point" cx="'+x(i)+'" cy="'+y(v)+'" r="4.2" fill="'+s.color+'">'+
-        '<title>'+evoData[i].mes+' · '+s.label+': '+shown+'</title></circle>';
-    });
-  });
-
-  svg+='</svg>';
-  document.getElementById(targetId).innerHTML=svg;
-}
-
-function evoBarChart(targetId) {
-  const W=680,H=250,L=58,R=16,T=14,B=34;
-  const plotW=W-L-R,plotH=H-T-B;
-  const maxValue=Math.ceil(Math.max(...evoData.flatMap(d=>[d.logs,d.gads]))/500)*500;
-  const ticks=[0,.25,.5,.75,1].map(v=>Math.round(maxValue*v));
-  const groupW=plotW/evoData.length,barW=Math.min(16,groupW*.24);
-  const y=v=>T+plotH-(v/maxValue)*plotH;
-  let svg='<svg class="evo-chart" viewBox="0 0 '+W+' '+H+'" role="img">';
-
-  ticks.forEach(v=>{
-    svg+='<line class="evo-gridline" x1="'+L+'" y1="'+y(v)+'" x2="'+(W-R)+'" y2="'+y(v)+'"></line>';
-    svg+='<text class="evo-axis" x="'+(L-8)+'" y="'+(y(v)+3)+'" text-anchor="end">'+evoNumber(v)+'</text>';
-  });
-
-  evoData.forEach((d,i)=>{
-    const center=L+groupW*(i+.5);
-    const hLogs=plotH*d.logs/maxValue,hGads=plotH*d.gads/maxValue;
-    svg+='<rect x="'+(center-barW-1)+'" y="'+y(d.logs)+'" width="'+barW+'" height="'+hLogs+
-      '" rx="3" fill="#e51c35"><title>'+d.mes+' · LOGS: '+evoNumber(d.logs)+'</title></rect>';
-    svg+='<rect x="'+(center+1)+'" y="'+y(d.gads)+'" width="'+barW+'" height="'+hGads+
-      '" rx="3" fill="#3672bd"><title>'+d.mes+' · GAds: '+evoDecimal(d.gads)+'</title></rect>';
-    svg+='<text class="evo-month" x="'+center+'" y="'+(H-10)+'" text-anchor="middle">'+d.mes+'</text>';
-  });
-
-  svg+='</svg>';
-  document.getElementById(targetId).innerHTML=svg;
-}
-
-evoLineChart('evo-link',[
-  {label:'LINK total',values:evoData.map(d=>d.link),color:'#e51c35'},
-  {label:'LINK con GCLID',values:evoData.map(d=>d.gclid),color:'#3672bd'}
-]);
-evoLineChart('evo-gclid-rate',[
-  {label:'Cobertura GCLID',values:evoData.map(d=>d.coberturaGclid),color:'#e51c35'}
-],true);
-evoBarChart('evo-logs-gads');
-evoLineChart('evo-gads-rate',[
-  {label:'Cobertura GAds vs LOGS',values:evoData.map(d=>d.coberturaGads),color:'#e51c35'}
-],true);
-</script>
-<!-- EVOLUTIVO_SECTION_END -->
-
 </body>
 </html>
