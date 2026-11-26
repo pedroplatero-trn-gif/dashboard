@@ -282,27 +282,40 @@
             <div>Este reporte audita la discrepancia entre las conversiones registradas en el link con GCLID y las confirmadas en los LOGS internos de Naturgy.</div>
         </div>
         <div class="kpi-row">
-            <div class="kpi-card">
-                <div class="kpi-label">LINK con GCLID Totales</div>
-                <div class="kpi-value" id="kpi-link">0</div>
-                <div class="kpi-desc">Conversiones asociadas a clicks calificados</div>
-            </div>
-            <div class="kpi-card">
-                <div class="kpi-label">LOGS Confirmados Totales</div>
-                <div class="kpi-value" id="kpi-logs">0</div>
-                <div class="kpi-desc">Conversiones reportadas en sistemas internos</div>
-            </div>
-            <div class="kpi-card" id="kpi-cobertura-card">
-                <div class="kpi-label">% Cobertura General</div>
-                <div class="kpi-value" id="kpi-cobertura">0%</div>
-                <div class="kpi-desc">Ratio promedio LOGS vs LINK</div>
-            </div>
-            <div class="kpi-card alert" id="kpi-alerts-card">
-                <div class="kpi-label">Alertas de Desviación</div>
-                <div class="kpi-value" id="kpi-alerts">0</div>
-                <div class="kpi-desc">Contratos fuera del margen óptimo (90% - 105%)</div>
-            </div>
+    <div class="kpi-card">
+        <div class="kpi-label" id="kpi-link-label">LINK con GCLID Totales</div>
+        <div class="kpi-value" id="kpi-link">0</div>
+        <div class="kpi-desc" id="kpi-link-desc">
+            Conversiones asociadas a clicks calificados
         </div>
+    </div>
+
+    <div class="kpi-card">
+        <div class="kpi-label" id="kpi-logs-label">LOGS Confirmados Totales</div>
+        <div class="kpi-value" id="kpi-logs">0</div>
+        <div class="kpi-desc" id="kpi-logs-desc">
+            Conversiones reportadas en sistemas internos
+        </div>
+    </div>
+
+    <div class="kpi-card" id="kpi-cobertura-card">
+        <div class="kpi-label" id="kpi-cobertura-label">% Cobertura General</div>
+        <div class="kpi-value" id="kpi-cobertura">0%</div>
+        <div class="kpi-desc" id="kpi-cobertura-desc">
+            Ratio promedio LOGS vs LINK
+        </div>
+    </div>
+
+    <div class="kpi-card alert" id="kpi-alerts-card">
+        <div class="kpi-label">Alertas de Desviación</div>
+        <div class="kpi-value" id="kpi-alerts">0</div>
+        <div class="kpi-desc" id="kpi-alerts-desc">
+            Contratos fuera del margen óptimo (90%–105%)
+        </div>
+    </div>
+</div>
+
+
         
         <!-- Pestañas corregidas con IDs para evitar fallos de comillas -->
         <div class="tab-nav">
@@ -464,36 +477,36 @@
             },
             {
                         "id": 7,
-                        "contrato": "Contratación Offline CMB/900 ",
-                        "gclid": 843,
-                        "logs": 796,
-                        "ratio": 94.4
-            },
-            {
-                        "id": 8,
                         "contrato": "Contrato Nuevo Luz - CMB/900 -  PYMES Naturgy Energía",
                         "gclid": 30,
                         "logs": 25,
                         "ratio": 83.3
             },
             {
-                        "id": 9,
+                        "id": 8,
                         "contrato": "Contrato Nuevo Gas - CMB/900 -  PYMES Naturgy Energía",
                         "gclid": 3,
                         "logs": 3,
                         "ratio": 100.0
             },
             {
+                        "id": 9,
+                        "contrato": "Contratación Offline CMB/900 ",
+                        "gclid": 843,
+                        "logs": 796,
+                        "ratio": 94.4
+            },
+            {
                         "id": 10,
                         "contrato": "Lead -  CMB Energía",
-                        "gclid": 0,
+                        "gclid": 2250,
                         "logs": 0,
                         "ratio": 0.0
             },
             {
                         "id": 11,
                         "contrato": "Lead -  Llamada 900 Energía",
-                        "gclid": 0,
+                        "gclid": 4572,
                         "logs": 0,
                         "ratio": 0.0
             }
@@ -675,20 +688,6 @@
                         "ratio": 0.0
             },
             {
-                        "contrato": "Contrato Luz - CMB/900 - Naturgy Energía (1)",
-                        "campana": "Lead -  CMB Energía",
-                        "gclid": 0,
-                        "logs": 0,
-                        "ratio": 0.0
-            },
-            {
-                        "contrato": "Contrato Luz - CMB/900 - Naturgy Energía (1)",
-                        "campana": "Lead -  Llamada 900 Energía",
-                        "gclid": 0,
-                        "logs": 0,
-                        "ratio": 0.0
-            },
-            {
                         "contrato": "Contrato Nuevo Luz - CMB/900 - Naturgy Energía (1)",
                         "campana": "202309_EnergiaQ4_SEA_PMAX-V2",
                         "gclid": 42,
@@ -864,20 +863,6 @@
                         "ratio": 0.0
             },
             {
-                        "contrato": "Contrato Nuevo Luz - CMB/900 - Naturgy Energía (1)",
-                        "campana": "Lead -  CMB Energía",
-                        "gclid": 0,
-                        "logs": 0,
-                        "ratio": 0.0
-            },
-            {
-                        "contrato": "Contrato Nuevo Luz - CMB/900 - Naturgy Energía (1)",
-                        "campana": "Lead -  Llamada 900 Energía",
-                        "gclid": 0,
-                        "logs": 0,
-                        "ratio": 0.0
-            },
-            {
                         "contrato": "Contrato Gas - CMB/900 - Naturgy Energía (1)",
                         "campana": "202309_EnergiaQ4_SEA_PMAX-V2",
                         "gclid": 0,
@@ -1048,20 +1033,6 @@
             {
                         "contrato": "Contrato Gas - CMB/900 - Naturgy Energía (1)",
                         "campana": "NATURGY_GP_AO_SEA_G_MARCA-ENERGIA - TEST-LANDING",
-                        "gclid": 0,
-                        "logs": 0,
-                        "ratio": 0.0
-            },
-            {
-                        "contrato": "Contrato Gas - CMB/900 - Naturgy Energía (1)",
-                        "campana": "Lead -  CMB Energía",
-                        "gclid": 0,
-                        "logs": 0,
-                        "ratio": 0.0
-            },
-            {
-                        "contrato": "Contrato Gas - CMB/900 - Naturgy Energía (1)",
-                        "campana": "Lead -  Llamada 900 Energía",
                         "gclid": 0,
                         "logs": 0,
                         "ratio": 0.0
@@ -1242,20 +1213,6 @@
                         "ratio": 0.0
             },
             {
-                        "contrato": "Contrato Nuevo Gas - CMB/900 - Naturgy Energía (1)",
-                        "campana": "Lead -  CMB Energía",
-                        "gclid": 0,
-                        "logs": 0,
-                        "ratio": 0.0
-            },
-            {
-                        "contrato": "Contrato Nuevo Gas - CMB/900 - Naturgy Energía (1)",
-                        "campana": "Lead -  Llamada 900 Energía",
-                        "gclid": 0,
-                        "logs": 0,
-                        "ratio": 0.0
-            },
-            {
                         "contrato": "Contrato SVA - CMB/900 - Naturgy Energía (1)",
                         "campana": "202309_EnergiaQ4_SEA_PMAX-V2",
                         "gclid": 0,
@@ -1426,20 +1383,6 @@
             {
                         "contrato": "Contrato SVA - CMB/900 - Naturgy Energía (1)",
                         "campana": "NATURGY_GP_AO_SEA_G_MARCA-ENERGIA - TEST-LANDING",
-                        "gclid": 0,
-                        "logs": 0,
-                        "ratio": 0.0
-            },
-            {
-                        "contrato": "Contrato SVA - CMB/900 - Naturgy Energía (1)",
-                        "campana": "Lead -  CMB Energía",
-                        "gclid": 0,
-                        "logs": 0,
-                        "ratio": 0.0
-            },
-            {
-                        "contrato": "Contrato SVA - CMB/900 - Naturgy Energía (1)",
-                        "campana": "Lead -  Llamada 900 Energía",
                         "gclid": 0,
                         "logs": 0,
                         "ratio": 0.0
@@ -1620,20 +1563,6 @@
                         "ratio": 0.0
             },
             {
-                        "contrato": "Contrato Nuevo SVA - CMB/900 - Naturgy Energía (1)",
-                        "campana": "Lead -  CMB Energía",
-                        "gclid": 0,
-                        "logs": 0,
-                        "ratio": 0.0
-            },
-            {
-                        "contrato": "Contrato Nuevo SVA - CMB/900 - Naturgy Energía (1)",
-                        "campana": "Lead -  Llamada 900 Energía",
-                        "gclid": 0,
-                        "logs": 0,
-                        "ratio": 0.0
-            },
-            {
                         "contrato": "Contrato Nuevo Luz - CMB/900 -  PYMES Naturgy Energía",
                         "campana": "202309_EnergiaQ4_SEA_PMAX-V2",
                         "gclid": 2,
@@ -1809,20 +1738,6 @@
                         "ratio": 0.0
             },
             {
-                        "contrato": "Contrato Nuevo Luz - CMB/900 -  PYMES Naturgy Energía",
-                        "campana": "Lead -  CMB Energía",
-                        "gclid": 0,
-                        "logs": 0,
-                        "ratio": 0.0
-            },
-            {
-                        "contrato": "Contrato Nuevo Luz - CMB/900 -  PYMES Naturgy Energía",
-                        "campana": "Lead -  Llamada 900 Energía",
-                        "gclid": 0,
-                        "logs": 0,
-                        "ratio": 0.0
-            },
-            {
                         "contrato": "Contrato Nuevo Gas - CMB/900 -  PYMES Naturgy Energía",
                         "campana": "202309_EnergiaQ4_SEA_PMAX-V2",
                         "gclid": 0,
@@ -1993,20 +1908,6 @@
             {
                         "contrato": "Contrato Nuevo Gas - CMB/900 -  PYMES Naturgy Energía",
                         "campana": "NATURGY_GP_AO_SEA_G_MARCA-ENERGIA - TEST-LANDING",
-                        "gclid": 0,
-                        "logs": 0,
-                        "ratio": 0.0
-            },
-            {
-                        "contrato": "Contrato Nuevo Gas - CMB/900 -  PYMES Naturgy Energía",
-                        "campana": "Lead -  CMB Energía",
-                        "gclid": 0,
-                        "logs": 0,
-                        "ratio": 0.0
-            },
-            {
-                        "contrato": "Contrato Nuevo Gas - CMB/900 -  PYMES Naturgy Energía",
-                        "campana": "Lead -  Llamada 900 Energía",
                         "gclid": 0,
                         "logs": 0,
                         "ratio": 0.0
@@ -2180,22 +2081,8 @@
                         "ratio": 100.0
             },
             {
-                        "contrato": "Contratación Offline CMB/901",
+                        "contrato": "Contratación Offline CMB/900 ",
                         "campana": "NATURGY_GP_AO_SEA_G_MARCA-ENERGIA - TEST-LANDING",
-                        "gclid": 0,
-                        "logs": 0,
-                        "ratio": 0.0
-            },
-            {
-                        "contrato": "Contratación Offline CMB/902",
-                        "campana": "Lead -  CMB Energía",
-                        "gclid": 0,
-                        "logs": 0,
-                        "ratio": 0.0
-            },
-            {
-                        "contrato": "Contratación Offline CMB/903",
-                        "campana": "Lead -  Llamada 900 Energía",
                         "gclid": 0,
                         "logs": 0,
                         "ratio": 0.0
@@ -2266,47 +2153,53 @@ function updateCampaignOptions() {
 function switchTab(tab) {
     currentTab = tab;
 
+    const buttons = {
+        normal: document.getElementById('btn-tab-normal'),
+        campana: document.getElementById('btn-tab-campana'),
+        evolutivo: document.getElementById('btn-tab-evolutivo')
+    };
+
     document.querySelectorAll('.tab-btn').forEach(button => {
         button.classList.remove('active');
         button.setAttribute('aria-selected', 'false');
     });
 
-    const isMonthly = tab === 'evolutivo';
+    const selectedButton = buttons[tab];
+    if (!selectedButton) {
+        console.error('Pestaña desconocida:', tab);
+        return;
+    }
+
+    selectedButton.classList.add('active');
+    selectedButton.setAttribute('aria-selected', 'true');
+
     const dashboard = document.querySelector('.dashboard-grid');
     const monthlyView = document.getElementById('monthly-view');
     const campaignFilter = document.getElementById('campaign-filter-wrapper');
 
-    document.getElementById(
-        tab === 'normal'
-            ? 'btn-tab-normal'
-            : tab === 'campana'
-                ? 'btn-tab-campana'
-                : 'btn-tab-evolutivo'
-    ).classList.add('active');
+    if (tab === 'evolutivo') {
+        dashboard.style.display = 'none';
+        monthlyView.style.display = 'block';
+        campaignFilter.style.display = 'none';
+        updateMonthlyKPIs();
+        return;
+    }
 
-    document.getElementById(
-        tab === 'normal'
-            ? 'btn-tab-normal'
-            : tab === 'campana'
-                ? 'btn-tab-campana'
-                : 'btn-tab-evolutivo'
-    ).setAttribute('aria-selected', 'true');
-
-    dashboard.style.display = isMonthly ? 'none' : '';
-    monthlyView.style.display = isMonthly ? 'block' : 'none';
+    dashboard.style.display = '';
+    monthlyView.style.display = 'none';
 
     if (tab === 'normal') {
         document.getElementById('table-title').textContent =
             'Análisis de Cobertura Global (Contratos)';
         campaignFilter.style.display = 'none';
-        applyFilters();
-    } else if (tab === 'campana') {
+    } else {
         document.getElementById('table-title').textContent =
             'Análisis de Cobertura Detallado (Campañas)';
         campaignFilter.style.display = 'block';
         updateCampaignOptions();
-        applyFilters();
     }
+
+    applyFilters();
 }
 
 
@@ -2431,6 +2324,21 @@ function resetFilters() {
             const alertsKpiCard = document.getElementById('kpi-alerts-card');
             const alertsKpiVal = document.getElementById('kpi-alerts');
             alertsKpiVal.textContent = alertCount;
+            document.getElementById('kpi-link-label').textContent = 'LINK con GCLID Totales';
+document.getElementById('kpi-link-desc').textContent =
+    'Conversiones asociadas a clicks calificados';
+
+document.getElementById('kpi-logs-label').textContent = 'LOGS Confirmados Totales';
+document.getElementById('kpi-logs-desc').textContent =
+    'Conversiones reportadas en sistemas internos';
+
+document.getElementById('kpi-cobertura-label').textContent = '% Cobertura General';
+document.getElementById('kpi-cobertura-desc').textContent =
+    'Ratio promedio LOGS vs LINK';
+
+document.getElementById('kpi-alerts-desc').textContent =
+    'Contratos fuera del margen óptimo (90% - 105%)';
+
             if (alertCount > 0) {
                 alertsKpiCard.style.borderColor = 'var(--accent)';
                 alertsKpiVal.style.color = 'var(--danger)';
@@ -2502,8 +2410,49 @@ const monthlyData = [
     {month:'Jun',link:1921,gclid:973,linkNoCE:1556,logs:911,gads:880.98,gclidRate:62.5,gadsRate:96.7},
     {month:'Jul',link:1878,gclid:753,linkNoCE:1234,logs:723,gads:750.37,gclidRate:61.0,gadsRate:103.8},
     {month:'Ago',link:2266,gclid:1121,linkNoCE:1957,logs:965,gads:992.28,gclidRate:57.3,gadsRate:102.8},
-    {month:'Sep',link:3043,gclid:1590,linkNoCE:2640,logs:1521,gads:1428.14,gclidRate:60.2,gadsRate:93.9}
+    {month:'Sep',link:3043,gclid:1590,linkNoCE:2640,logs:1521,gads:1428.14,gclidRate:60.2,gadsRate:93.9},
+    {month:'Oct',link:2801,gclid:1340,linkNoCE:2218,logs:1171,gads:1338.08,gclidRate:60.4,gadsRate:114.3},
+    {month:'Nov',link:1756,gclid:843,linkNoCE:1401,logs:796,gads:2786.23,gclidRate:60.2,gadsRate:350.0}
 ];
+function updateMonthlyKPIs() {
+    const totalGclid = monthlyData.reduce((sum, item) => sum + item.gclid, 0);
+    const totalLogs = monthlyData.reduce((sum, item) => sum + item.logs, 0);
+    const coverage = totalGclid ? totalLogs / totalGclid * 100 : 0;
+
+    // Para el KPI de alertas del evolutivo:
+    // cuenta meses cuya cobertura LOGS/GCLID está fuera del rango 90–105%.
+    const monthlyAlerts = monthlyData.filter(item => {
+        const ratio = item.gclid ? item.logs / item.gclid * 100 : 0;
+        return ratio < 90 || ratio > 105;
+    }).length;
+
+    const numberFormat = new Intl.NumberFormat('es-ES');
+    const percentFormat = new Intl.NumberFormat('es-ES', {
+        minimumFractionDigits: 1,
+        maximumFractionDigits: 1
+    });
+
+    document.getElementById('kpi-link').textContent = numberFormat.format(totalGclid);
+    document.getElementById('kpi-logs').textContent = numberFormat.format(totalLogs);
+    document.getElementById('kpi-cobertura').textContent =
+        percentFormat.format(coverage) + '%';
+    document.getElementById('kpi-alerts').textContent = numberFormat.format(monthlyAlerts);
+
+    document.getElementById('kpi-link-label').textContent = 'GCLID acumulado';
+    document.getElementById('kpi-link-desc').textContent =
+        `Acumulado mensual · ${monthlyData.length} meses`;
+
+    document.getElementById('kpi-logs-label').textContent = 'LOGS acumulados';
+    document.getElementById('kpi-logs-desc').textContent =
+        `Acumulado mensual · ${monthlyData.length} meses`;
+
+    document.getElementById('kpi-cobertura-label').textContent = 'Cobertura LOGS / GCLID';
+    document.getElementById('kpi-cobertura-desc').textContent =
+        'Ratio del acumulado mensual';
+
+    document.getElementById('kpi-alerts-desc').textContent =
+        'Meses fuera del rango óptimo (90%–105%)';
+}
 
 const monthlyNumber = value =>
     new Intl.NumberFormat('es-ES', {maximumFractionDigits:2}).format(value);
