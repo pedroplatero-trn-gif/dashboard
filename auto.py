@@ -156,6 +156,141 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         .tab-btn.active { color: var(--primary); border-bottom-color: var(--havas-red); }
         .tab-nav { display: flex; gap: 15px; margin-bottom: 25px; border-bottom: 1px solid var(--border); }
         .python-sync-box { background: #edf2f7; border-radius: 8px; padding: 15px; font-size: 0.8rem; margin-top: 25px; border: 1px solid #cbd5e0; }
+        /* Evolutivo mensual: sección separada de filtros, barras y CSV */
+#monthly-view {
+    display: none;
+}
+
+.monthly-heading {
+    margin: 0 0 16px;
+}
+
+.monthly-heading h2 {
+    margin: 4px 0;
+    font-size: 1.4rem;
+}
+
+.monthly-heading p {
+    color: var(--text-light);
+    font-size: 0.85rem;
+}
+
+.monthly-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.monthly-card {
+    min-width: 0;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px;
+    box-shadow: 0 4px 6px rgba(0,0,0,.02);
+}
+
+.monthly-card h3 {
+    font-size: 1rem;
+    margin: 0 0 3px;
+}
+
+.monthly-card p {
+    color: var(--text-light);
+    font-size: .78rem;
+    margin: 0 0 8px;
+}
+
+.monthly-chart {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.monthly-gridline {
+    stroke: #e7ebf1;
+    stroke-width: 1;
+}
+
+.monthly-axis {
+    fill: #718096;
+    font-size: 10px;
+}
+
+.monthly-month {
+    fill: #64748b;
+    font-size: 10px;
+}
+
+.monthly-line {
+    fill: none;
+    stroke-width: 2.7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.monthly-point {
+    stroke: #fff;
+    stroke-width: 1.7;
+    cursor: crosshair;
+}
+
+.monthly-bar {
+    cursor: crosshair;
+}
+
+.monthly-legend {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 5px;
+    color: var(--text-light);
+    font-size: .72rem;
+}
+
+.monthly-legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.monthly-swatch {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+}
+
+.monthly-tooltip {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    pointer-events: none;
+    max-width: 290px;
+    padding: 8px 10px;
+    border-radius: 7px;
+    background: #17212b;
+    color: #fff;
+    box-shadow: 0 8px 22px rgba(16,32,48,.25);
+    font-size: 12px;
+    line-height: 1.45;
+}
+
+.monthly-tooltip strong {
+    display: block;
+    margin-bottom: 2px;
+}
+
+@media (max-width: 760px) {
+    .monthly-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .monthly-card {
+        padding: 14px;
+    }
+}
+
     </style>
 </head>
 <body>
@@ -198,6 +333,8 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         <div class="tab-nav">
             <button id="btn-tab-normal" class="tab-btn active" onclick="switchTab('normal')">Vista General (Contratos)</button>
             <button id="btn-tab-campana" class="tab-btn" onclick="switchTab('campana')">Desglose por Campaña</button>
+            <button id="btn-tab-evolutivo" class="tab-btn"onclick="switchTab('evolutivo')">Evolutivo Mensual</button>
+
         </div>
         
         <div class="dashboard-grid">
@@ -240,6 +377,70 @@ HTML_TEMPLATE = """<!DOCTYPE html>
                 </div>
             </div>
         </div>
+        <div id="monthly-view">
+    <div class="monthly-heading">
+        <h2>Evolutivo Mensual</h2>
+        <p>
+            Enero–septiembre de 2026. Pasa el cursor por un punto o una barra
+            para consultar el valor exacto.
+        </p>
+    </div>
+
+    <div class="monthly-grid">
+        <article class="monthly-card">
+            <h3>Conversiones LINK vs GCLID</h3>
+            <p>Volumen mensual</p>
+            <div id="monthly-link-chart"></div>
+            <div class="monthly-legend">
+                <span class="monthly-legend-item">
+                    <i class="monthly-swatch" style="background:#e31b23"></i>LINK total
+                </span>
+                <span class="monthly-legend-item">
+                    <i class="monthly-swatch" style="background:#3672bd"></i>LINK con GCLID
+                </span>
+            </div>
+        </article>
+
+        <article class="monthly-card">
+            <h3>Cobertura GCLID</h3>
+            <p>LINK con GCLID ÷ LINK sin CE</p>
+            <div id="monthly-gclid-chart"></div>
+            <div class="monthly-legend">
+                <span class="monthly-legend-item">
+                    <i class="monthly-swatch" style="background:#e31b23"></i>Cobertura GCLID
+                </span>
+            </div>
+        </article>
+
+        <article class="monthly-card">
+            <h3>LOGS vs conversiones de GAds</h3>
+            <p>Volumen mensual</p>
+            <div id="monthly-logs-chart"></div>
+            <div class="monthly-legend">
+                <span class="monthly-legend-item">
+                    <i class="monthly-swatch" style="background:#e31b23"></i>LOGS
+                </span>
+                <span class="monthly-legend-item">
+                    <i class="monthly-swatch" style="background:#3672bd"></i>GAds
+                </span>
+            </div>
+        </article>
+
+        <article class="monthly-card">
+            <h3>Cobertura de GAds</h3>
+            <p>GAds ÷ LOGS</p>
+            <div id="monthly-gads-chart"></div>
+            <div class="monthly-legend">
+                <span class="monthly-legend-item">
+                    <i class="monthly-swatch" style="background:#e31b23"></i>Cobertura GAds vs LOGS
+                </span>
+            </div>
+        </article>
+    </div>
+</div>
+
+<div id="monthly-tooltip" class="monthly-tooltip" role="status" aria-live="polite"></div>
+
     </div>
     <script>
         // DATOS INYECTADOS POR PYTHON
@@ -310,28 +511,49 @@ function updateCampaignOptions() {
 function switchTab(tab) {
     currentTab = tab;
 
-    document.querySelectorAll('.tab-btn').forEach(button =>
-        button.classList.remove('active')
-    );
+    document.querySelectorAll('.tab-btn').forEach(button => {
+        button.classList.remove('active');
+        button.setAttribute('aria-selected', 'false');
+    });
 
-    const campaignFilter =
-        document.getElementById('campaign-filter-wrapper');
+    const isMonthly = tab === 'evolutivo';
+    const dashboard = document.querySelector('.dashboard-grid');
+    const monthlyView = document.getElementById('monthly-view');
+    const campaignFilter = document.getElementById('campaign-filter-wrapper');
+
+    document.getElementById(
+        tab === 'normal'
+            ? 'btn-tab-normal'
+            : tab === 'campana'
+                ? 'btn-tab-campana'
+                : 'btn-tab-evolutivo'
+    ).classList.add('active');
+
+    document.getElementById(
+        tab === 'normal'
+            ? 'btn-tab-normal'
+            : tab === 'campana'
+                ? 'btn-tab-campana'
+                : 'btn-tab-evolutivo'
+    ).setAttribute('aria-selected', 'true');
+
+    dashboard.style.display = isMonthly ? 'none' : '';
+    monthlyView.style.display = isMonthly ? 'block' : 'none';
 
     if (tab === 'normal') {
-        document.getElementById('btn-tab-normal').classList.add('active');
         document.getElementById('table-title').textContent =
             'Análisis de Cobertura Global (Contratos)';
         campaignFilter.style.display = 'none';
-    } else {
-        document.getElementById('btn-tab-campana').classList.add('active');
+        applyFilters();
+    } else if (tab === 'campana') {
         document.getElementById('table-title').textContent =
             'Análisis de Cobertura Detallado (Campañas)';
         campaignFilter.style.display = 'block';
         updateCampaignOptions();
+        applyFilters();
     }
-
-    applyFilters();
 }
+
 
 function applyFilters() {
     const selectedContract =
@@ -513,6 +735,196 @@ function resetFilters() {
     link.click();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
+
+// Datos mensuales: bloque total Contratación Offline CMB/900.
+// No participan en las barras, filtros ni exportación CSV del análisis principal.
+const monthlyData = [
+    {month:'Ene',link:1209,gclid:170,linkNoCE:633,logs:169,gads:175.34,gclidRate:26.9,gadsRate:103.8},
+    {month:'Feb',link:2212,gclid:368,linkNoCE:1103,logs:357,gads:393.73,gclidRate:33.4,gadsRate:110.3},
+    {month:'Mar',link:2585,gclid:685,linkNoCE:1439,logs:608,gads:634.57,gclidRate:47.6,gadsRate:104.4},
+    {month:'Abr',link:2245,gclid:911,linkNoCE:1668,logs:936,gads:814.83,gclidRate:54.6,gadsRate:87.1},
+    {month:'May',link:1725,gclid:773,linkNoCE:1328,logs:736,gads:754.86,gclidRate:58.2,gadsRate:102.6},
+    {month:'Jun',link:1921,gclid:973,linkNoCE:1556,logs:911,gads:880.98,gclidRate:62.5,gadsRate:96.7},
+    {month:'Jul',link:1878,gclid:753,linkNoCE:1234,logs:723,gads:750.37,gclidRate:61.0,gadsRate:103.8},
+    {month:'Ago',link:2266,gclid:1121,linkNoCE:1957,logs:965,gads:992.28,gclidRate:57.3,gadsRate:102.8},
+    {month:'Sep',link:3043,gclid:1590,linkNoCE:2640,logs:1521,gads:1428.14,gclidRate:60.2,gadsRate:93.9}
+];
+
+const monthlyNumber = value =>
+    new Intl.NumberFormat('es-ES', {maximumFractionDigits:2}).format(value);
+
+const monthlyPercent = value =>
+    new Intl.NumberFormat('es-ES', {
+        minimumFractionDigits:1,
+        maximumFractionDigits:1
+    }).format(value) + '%';
+
+function drawMonthlyLineChart(targetId, series, isPercent=false) {
+    const W=680, H=250, L=58, R=16, T=14, B=34;
+    const plotW=W-L-R, plotH=H-T-B;
+    const values=series.flatMap(item=>item.values);
+    const maxValue=isPercent
+        ? Math.max(125, Math.ceil(Math.max(...values)/25)*25)
+        : Math.ceil(Math.max(...values)/500)*500;
+
+    const ticks=isPercent
+        ? Array.from({length:Math.floor(maxValue/25)+1},(_,i)=>i*25)
+        : [0,.25,.5,.75,1].map(value=>Math.round(maxValue*value));
+
+    const x=index=>L+index*(plotW/(monthlyData.length-1));
+    const y=value=>T+plotH-(value/maxValue)*plotH;
+
+    let svg=`<svg class="monthly-chart" viewBox="0 0 ${W} ${H}" role="img">`;
+
+    ticks.forEach(value=>{
+        svg+=`<line class="monthly-gridline" x1="${L}" y1="${y(value)}" x2="${W-R}" y2="${y(value)}"></line>`;
+        svg+=`<text class="monthly-axis" x="${L-8}" y="${y(value)+3}" text-anchor="end">${isPercent?value+'%':monthlyNumber(value)}</text>`;
+    });
+
+    monthlyData.forEach((item,index)=>{
+        svg+=`<text class="monthly-month" x="${x(index)}" y="${H-10}" text-anchor="middle">${item.month}</text>`;
+    });
+
+    series.forEach(item=>{
+        const points=item.values.map((value,index)=>`${x(index)},${y(value)}`).join(' ');
+        svg+=`<polyline class="monthly-line" points="${points}" stroke="${item.color}"></polyline>`;
+
+        item.values.forEach((value,index)=>{
+            const displayValue=isPercent?monthlyPercent(value):monthlyNumber(value);
+            svg+=`<circle class="monthly-point"
+                tabindex="0"
+                cx="${x(index)}"
+                cy="${y(value)}"
+                r="4.5"
+                fill="${item.color}"
+                data-month="${monthlyData[index].month}"
+                data-series="${item.label}"
+                data-value="${displayValue}"></circle>`;
+        });
+    });
+
+    svg+='</svg>';
+    document.getElementById(targetId).innerHTML=svg;
+}
+
+function drawMonthlyBars(targetId) {
+    const W=680, H=250, L=58, R=16, T=14, B=34;
+    const plotW=W-L-R, plotH=H-T-B;
+    const maxValue=Math.ceil(
+        Math.max(...monthlyData.flatMap(item=>[item.logs,item.gads]))/500
+    )*500;
+    const ticks=[0,.25,.5,.75,1].map(value=>Math.round(maxValue*value));
+    const groupW=plotW/monthlyData.length;
+    const barW=Math.min(16,groupW*.24);
+    const y=value=>T+plotH-(value/maxValue)*plotH;
+
+    let svg=`<svg class="monthly-chart" viewBox="0 0 ${W} ${H}" role="img">`;
+
+    ticks.forEach(value=>{
+        svg+=`<line class="monthly-gridline" x1="${L}" y1="${y(value)}" x2="${W-R}" y2="${y(value)}"></line>`;
+        svg+=`<text class="monthly-axis" x="${L-8}" y="${y(value)+3}" text-anchor="end">${monthlyNumber(value)}</text>`;
+    });
+
+    monthlyData.forEach((item,index)=>{
+        const center=L+groupW*(index+.5);
+        const logsHeight=plotH*item.logs/maxValue;
+        const gadsHeight=plotH*item.gads/maxValue;
+
+        svg+=`<text class="monthly-month" x="${center}" y="${H-10}" text-anchor="middle">${item.month}</text>`;
+
+        svg+=`<rect class="monthly-bar"
+            tabindex="0"
+            x="${center-barW-1}" y="${y(item.logs)}"
+            width="${barW}" height="${logsHeight}" rx="3"
+            fill="#e31b23"
+            data-month="${item.month}" data-series="LOGS"
+            data-value="${monthlyNumber(item.logs)}"></rect>`;
+
+        svg+=`<rect class="monthly-bar"
+            tabindex="0"
+            x="${center+1}" y="${y(item.gads)}"
+            width="${barW}" height="${gadsHeight}" rx="3"
+            fill="#3672bd"
+            data-month="${item.month}" data-series="GAds"
+            data-value="${monthlyNumber(item.gads)}"></rect>`;
+    });
+
+    svg+='</svg>';
+    document.getElementById(targetId).innerHTML=svg;
+}
+
+function showMonthlyTooltip(event, element) {
+    const tooltip=document.getElementById('monthly-tooltip');
+    tooltip.innerHTML=
+        `<strong>${element.dataset.month}</strong>`+
+        `${element.dataset.series}: ${element.dataset.value}`;
+    tooltip.style.display='block';
+    moveMonthlyTooltip(event);
+}
+
+function moveMonthlyTooltip(event) {
+    const tooltip=document.getElementById('monthly-tooltip');
+    if(tooltip.style.display!=='block') return;
+
+    let left=event.clientX+14;
+    let top=event.clientY+14;
+    const bounds=tooltip.getBoundingClientRect();
+
+    if(left+bounds.width>window.innerWidth-8) left=event.clientX-bounds.width-14;
+    if(top+bounds.height>window.innerHeight-8) top=event.clientY-bounds.height-14;
+
+    tooltip.style.left=Math.max(8,left)+'px';
+    tooltip.style.top=Math.max(8,top)+'px';
+}
+
+function hideMonthlyTooltip() {
+    document.getElementById('monthly-tooltip').style.display='none';
+}
+
+function renderMonthlyCharts() {
+    drawMonthlyLineChart('monthly-link-chart',[
+        {label:'LINK total',values:monthlyData.map(item=>item.link),color:'#e31b23'},
+        {label:'LINK con GCLID',values:monthlyData.map(item=>item.gclid),color:'#3672bd'}
+    ]);
+
+    drawMonthlyLineChart('monthly-gclid-chart',[
+        {label:'Cobertura GCLID',values:monthlyData.map(item=>item.gclidRate),color:'#e31b23'}
+    ],true);
+
+    drawMonthlyBars('monthly-logs-chart');
+
+    drawMonthlyLineChart('monthly-gads-chart',[
+        {label:'Cobertura GAds vs LOGS',values:monthlyData.map(item=>item.gadsRate),color:'#e31b23'}
+    ],true);
+}
+
+document.addEventListener('pointerover',event=>{
+    const point=event.target.closest('[data-series]');
+    if(point) showMonthlyTooltip(event,point);
+});
+
+document.addEventListener('pointermove',moveMonthlyTooltip);
+
+document.addEventListener('pointerout',event=>{
+    if(event.target.closest('[data-series]')) hideMonthlyTooltip();
+});
+
+document.addEventListener('focusin',event=>{
+    const point=event.target.closest('[data-series]');
+    if(!point) return;
+
+    const bounds=point.getBoundingClientRect();
+    showMonthlyTooltip(
+        {clientX:bounds.left+bounds.width/2,clientY:bounds.top},
+        point
+    );
+});
+
+document.addEventListener('focusout',event=>{
+    if(event.target.closest('[data-series]')) hideMonthlyTooltip();
+});
+
+renderMonthlyCharts();
 
 
         // Se inyectarán los arrays dataResultados y dataCampanas arriba
